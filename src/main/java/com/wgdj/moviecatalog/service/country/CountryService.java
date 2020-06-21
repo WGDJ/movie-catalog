@@ -1,11 +1,13 @@
 package com.wgdj.moviecatalog.service.country;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Component;
 
+import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Country;
 import com.wgdj.moviecatalog.repository.CountryRepository;
 
@@ -18,9 +20,26 @@ public class CountryService implements CountryServiceInterface {
 	@Autowired
 	private CountryRepository countryRepository;
 
+	@Autowired
+	private BeanUtilsBean beanUtilsBean;
+
 	@Override
 	public Mono<Country> save(Country country) {
 		return countryRepository.save(country);
+	}
+
+	@Override
+	public Mono<Country> update(Country country) {
+		try {
+			Country countryToUpdate = countryRepository.findById(country.getId()).block();
+
+			beanUtilsBean.copyProperties(countryToUpdate, country);
+
+			return countryRepository.save(countryToUpdate);
+
+		} catch (Exception e) {
+			throw new DatabaseObjectNotFoundException("Country", country.getId());
+		}
 	}
 
 	@Override
@@ -30,7 +49,8 @@ public class CountryService implements CountryServiceInterface {
 
 	@Override
 	public Flux<Country> findAll(Country country) {
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.ENDING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
+				.withStringMatcher(StringMatcher.STARTING);
 		Example<Country> example = Example.of(country, matcher);
 		return countryRepository.findAll(example);
 	}

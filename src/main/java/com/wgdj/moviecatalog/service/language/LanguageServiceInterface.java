@@ -9,6 +9,8 @@ public interface LanguageServiceInterface{
 
   Mono<Language> save(Language language);
   
+  Mono<Language> update(Language language);
+  
   Mono<Language> findById(String id);
   
   Flux<Language> findAll(Language language);

@@ -1,11 +1,13 @@
 package com.wgdj.moviecatalog.service.language;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Component;
 
+import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.repository.LanguageRepository;
 
@@ -18,9 +20,26 @@ public class LanguageService implements LanguageServiceInterface {
 	@Autowired
 	private LanguageRepository languageRepository;
 
+	@Autowired
+	private BeanUtilsBean beanUtilsBean;
+
 	@Override
 	public Mono<Language> save(Language language) {
 		return languageRepository.save(language);
+	}
+
+	@Override
+	public Mono<Language> update(Language language) {
+		try {
+			Language languageToUpdate = languageRepository.findById(language.getId()).block();
+
+			beanUtilsBean.copyProperties(languageToUpdate, language);
+
+			return languageRepository.save(languageToUpdate);
+
+		} catch (Exception e) {
+			throw new DatabaseObjectNotFoundException("Language", language.getId());
+		}
 	}
 
 	@Override
@@ -30,7 +49,8 @@ public class LanguageService implements LanguageServiceInterface {
 
 	@Override
 	public Flux<Language> findAll(Language language) {
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.ENDING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
+				.withStringMatcher(StringMatcher.STARTING);
 		Example<Language> example = Example.of(language, matcher);
 		return languageRepository.findAll(example);
 	}

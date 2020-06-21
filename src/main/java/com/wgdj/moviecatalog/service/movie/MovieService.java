@@ -7,11 +7,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.BasicDBList;
 import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
+import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.model.Movie;
 import com.wgdj.moviecatalog.repository.MovieRepository;
-import com.wgdj.moviecatalog.util.NullAwareBeanUtilsBean;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,6 +20,9 @@ public class MovieService implements MovieServiceInterface {
 
 	@Autowired
 	private MovieRepository movieRepository;
+	
+	@Autowired
+	private BeanUtilsBean beanUtilsBean;
 
 	@Override
 	public Mono<Movie> save(Movie movie) {
@@ -33,8 +35,7 @@ public class MovieService implements MovieServiceInterface {
 		try {
 			Movie movieToUpdate = movieRepository.findById(movie.getId()).block();
 
-			BeanUtilsBean notNullFilds = new NullAwareBeanUtilsBean();
-			notNullFilds.copyProperties(movieToUpdate, movie);
+			beanUtilsBean.copyProperties(movieToUpdate, movie);
 
 			return movieRepository.save(movieToUpdate);
 
@@ -60,8 +61,7 @@ public class MovieService implements MovieServiceInterface {
 		
 		ExampleMatcher matcher = ExampleMatcher.matching()
 				.withIgnoreNullValues()
-//				.withIgnorePaths("belongsToCollection", "genres", "productionCompanies")
-				.withStringMatcher(StringMatcher.ENDING);
+				.withStringMatcher(StringMatcher.STARTING);
 		Example<Movie> example = Example.of(movie, matcher);
 		return movieRepository.findAll(example);
 	}

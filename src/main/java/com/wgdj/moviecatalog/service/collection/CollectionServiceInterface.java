@@ -9,6 +9,8 @@ public interface CollectionServiceInterface{
 
   Mono<Collection> save(Collection collection);
   
+  Mono<Collection> update(Collection collection);
+  
   Mono<Collection> findById(String id);
   
   Flux<Collection> findAll(Collection collection);

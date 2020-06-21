@@ -9,6 +9,8 @@ public interface GenreServiceInterface{
 
   Mono<Genre> save(Genre genre);
   
+  Mono<Genre> update(Genre genre);
+  
   Mono<Genre> findById(String id);
   
   Flux<Genre> findAll(Genre genre);

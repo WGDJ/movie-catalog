@@ -9,6 +9,8 @@ public interface CountryServiceInterface{
 
   Mono<Country> save(Country country);
   
+  Mono<Country> update(Country country);
+  
   Mono<Country> findById(String id);
   
   Flux<Country> findAll(Country country);

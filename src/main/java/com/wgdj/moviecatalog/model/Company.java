@@ -23,11 +23,11 @@ public class Company {
 	@Id
 	@Indexed(unique = true)
 	public String id;
-	
-	@NotBlank(message="Company name is required.")
+
+	@NotBlank(message = "Company name is required.")
 	public String name;
-	
-	@NotBlank(message="Company oring country is required.")
+
+	@NotBlank(message = "Company oring country is required.")
 	public String originCountry;
 
 }
