@@ -8,12 +8,12 @@ import java.util.List;
 
 import javax.validation.ValidationException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
@@ -28,12 +28,16 @@ public class CollectionTest {
 
 	@Autowired
 	private CollectionRepository collectionRepository;
-	
+
 	@Autowired
 	private CollectionServiceInterface collectionService;
 
+	@Before
+	public void init() {
+		collectionRepository.deleteAll().block();
+	}
+
 	@DisplayName("Test save with requred field not blank")
-	@DirtiesContext
 	@Test
 	public void whenSaveWithRequredfieldNotBlank_thenReturnCollectionFindById() {
 		Collection collection = createCollection("Mad Max Collection");
@@ -43,79 +47,75 @@ public class CollectionTest {
 
 		assertThat(found.getName()).isEqualTo(collection.getName());
 	}
-	
+
 	@DisplayName("Test save with requred field blank")
-	@DirtiesContext
 	@Test
 	public void whenSaveWithoutRequredfieldNotBlank_thenThrowsException() {
-		
+
 		Exception exception = assertThrows(ValidationException.class, () -> {
 			Collection collection = createCollection("");
 			collectionService.save(collection).block();
-	    });
-		
+		});
+
 		assertThat(exception.getMessage()).contains("Collection name is required.");
 
 	}
-	
+
 	@DisplayName("Test update with exist id and field not blank")
-	@DirtiesContext
 	@Test
 	public void whenUpdateWithExistIdAndFieldNotBlank_thenUpdateCollection() {
 		Collection collection = createCollection("Mad Max Collection");
 		collection = collectionService.save(collection).block();
-		
+
 		assertThat(collection.getId()).isNotNull();
-		
+
 		String newName = "Mad Max Collection - Updeted";
 		collection.setName(newName);
-		Collection collectionUpdate =  collectionService.update(collection).block();
-		
+		Collection collectionUpdate = collectionService.update(collection).block();
+
 		assertThat(collectionUpdate.getId()).isEqualTo(collection.getId());
-		
+
 		assertThat(collectionUpdate.getName()).isEqualTo(newName);
 
 	}
-	
+
 	@DisplayName("Test update with exist id and field blank")
-	@DirtiesContext
 	@Test
 	public void whenUpdateWithExistIdAndFieldBlank_thenThrowsException() {
-		
+
 		Exception exception = assertThrows(ValidationException.class, () -> {
 			Collection collection = createCollection("Mad Max Collection");
 			collection = collectionService.save(collection).block();
-			
+
 			assertThat(collection.getId()).isNotNull();
-			
+
 			collection.setName("");
 			collectionService.update(collection).block();
-	    });
-		
+		});
+
 		assertThat(exception.getMessage()).contains("Collection name is required.");
-		
+
 	}
-	
+
 	@DisplayName("Test update with not exist id and field not blank")
-	@DirtiesContext
 	@Test
 	public void whenUpdateWithNotExistIdAndFieldNotBlank_thenThrowsException() {
-		
+
 		String idNotExists = "87re6t9876re9t87";
 		Exception exception = assertThrows(DatabaseObjectNotFoundException.class, () -> {
 			Collection collection = createCollection("Mad Max Collection");
 			collection.setId(idNotExists);
-			
+
 			collection.setName("Mad Max Collection - Updated");
 			collectionService.update(collection).block();
-	    });
-		
-		assertThat(exception.getMessage()).isEqualTo((String.format("%s with the %s entered in the database was not found.", "Collection", idNotExists)));
-		
+		});
+
+		assertThat(exception.getMessage()).isEqualTo(
+				(String.format("%s with the %s entered in the database was not found.", "Collection", idNotExists)));
+
 	}
 
 	@DisplayName("Test FindAll (for example) Collection")
-	@DirtiesContext
 	@Test
 	public void whenFindByExample_thenReturn2Collections() {
 		List<Collection> collections = new ArrayList<Collection>();
@@ -124,7 +124,7 @@ public class CollectionTest {
 		collections.add(createCollection("Hannibal Lecter"));
 		collections.add(createCollection("Mad Man"));
 		collectionRepository.saveAll(collections).blockLast();
-		
+
 		Collection collectionExample = new Collection();
 		collectionExample.setName("Mad");
 
@@ -132,9 +132,8 @@ public class CollectionTest {
 
 		assertThat(found.size()).isEqualTo(2);
 	}
-	
+
 	@DisplayName("Test ByExample (for example) Collection")
-	@DirtiesContext
 	@Test
 	public void whenFindAll_thenReturn4Collections() {
 		List<Collection> collections = new ArrayList<Collection>();
@@ -143,7 +142,7 @@ public class CollectionTest {
 		collections.add(createCollection("Hannibal Lecter"));
 		collections.add(createCollection("Mad Man"));
 		collectionRepository.saveAll(collections).blockLast();
-		
+
 		Collection collectionExample = new Collection();
 		collectionExample.setName("Mad");
 
@@ -151,7 +150,7 @@ public class CollectionTest {
 
 		assertThat(found.size()).isEqualTo(2);
 	}
-	
+
 	private Collection createCollection(String name) {
 		Collection collection = new Collection();
 		collection.setName(name);
