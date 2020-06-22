@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Movie;
-import com.wgdj.moviecatalog.repository.CompanyRepository;
-import com.wgdj.moviecatalog.repository.CountryRepository;
-import com.wgdj.moviecatalog.repository.GenreRepository;
-import com.wgdj.moviecatalog.repository.LanguageRepository;
 import com.wgdj.moviecatalog.repository.MovieRepository;
 
 import reactor.core.publisher.Flux;
@@ -23,18 +19,6 @@ public class MovieService implements MovieServiceInterface {
 
 	@Autowired
 	private MovieRepository movieRepository;
-	
-	@Autowired
-	private GenreRepository genreRepository;
-	
-//	@Autowired
-//	private CompanyRepository companyRepository;
-//	
-//	@Autowired
-//	private CountryRepository countryRepository;
-//	
-//	@Autowired
-//	private LanguageRepository languageRepository;
 	
 	@Autowired
 	private BeanUtilsBean beanUtilsBean;
@@ -62,13 +46,6 @@ public class MovieService implements MovieServiceInterface {
 
 	@Override
 	public Mono<Movie> findById(String id) {
-		
-//		return movieRepository.findById(id).flatMap(movie -> Mono.just(movie)
-//				.zipWith(genreRepository.findAllById(movie.getGenresIds()).collectList(), (m, g) -> {
-//					m.setGenres(g);
-//					return m;
-//				}));
-		
 		return movieRepository.findById(id);
 	}
 

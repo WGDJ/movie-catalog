@@ -37,9 +37,9 @@ public class CollectionTest {
 		collectionRepository.deleteAll().block();
 	}
 
-	@DisplayName("Test save with requred field not blank")
+	@DisplayName("Test save with required field not blank")
 	@Test
-	public void whenSaveWithRequredfieldNotBlank_thenReturnCollectionFindById() {
+	public void whenSaveWithRequredFieldNotBlank_thenReturnCollectionFindById() {
 		Collection collection = createCollection("Mad Max Collection");
 		collection = collectionService.save(collection).block();
 
@@ -48,9 +48,9 @@ public class CollectionTest {
 		assertThat(found.getName()).isEqualTo(collection.getName());
 	}
 
-	@DisplayName("Test save with requred field blank")
+	@DisplayName("Test save with required field blank")
 	@Test
-	public void whenSaveWithoutRequredfieldNotBlank_thenThrowsException() {
+	public void whenSaveWithoutRequredFieldNotBlank_thenThrowsException() {
 
 		Exception exception = assertThrows(ValidationException.class, () -> {
 			Collection collection = createCollection("");
@@ -60,8 +60,21 @@ public class CollectionTest {
 		assertThat(exception.getMessage()).contains("Collection name is required.");
 
 	}
+	
+	@DisplayName("Test save with required field null")
+	@Test
+	public void whenSaveWithoutRequredFieldNotNull_thenThrowsException() {
 
-	@DisplayName("Test update with exist id and field not blank")
+		Exception exception = assertThrows(ValidationException.class, () -> {
+			Collection collection = createCollection(null);
+			collectionService.save(collection).block();
+		});
+
+		assertThat(exception.getMessage()).contains("Collection name is required.");
+
+	}
+
+	@DisplayName("Test update with existing id and field not blank")
 	@Test
 	public void whenUpdateWithExistIdAndFieldNotBlank_thenUpdateCollection() {
 		Collection collection = createCollection("Mad Max Collection");
@@ -79,7 +92,7 @@ public class CollectionTest {
 
 	}
 
-	@DisplayName("Test update with exist id and field blank")
+	@DisplayName("Test update with existing id and field blank")
 	@Test
 	public void whenUpdateWithExistIdAndFieldBlank_thenThrowsException() {
 
@@ -97,7 +110,7 @@ public class CollectionTest {
 
 	}
 
-	@DisplayName("Test update with not exist id and field not blank")
+	@DisplayName("Test update with not existing id and field not blank")
 	@Test
 	public void whenUpdateWithNotExistIdAndFieldNotBlank_thenThrowsException() {
 
@@ -115,9 +128,9 @@ public class CollectionTest {
 
 	}
 
-	@DisplayName("Test FindAll (for example) Collection")
+	@DisplayName("Test FindAll Collection")
 	@Test
-	public void whenFindByExample_thenReturn2Collections() {
+	public void whenFindByAll_thenReturn4Collections() {
 		List<Collection> collections = new ArrayList<Collection>();
 		collections.add(createCollection("Mad Max Collection"));
 		collections.add(createCollection("Star Wars Collection"));
@@ -125,16 +138,14 @@ public class CollectionTest {
 		collections.add(createCollection("Mad Man"));
 		collectionRepository.saveAll(collections).blockLast();
 
-		Collection collectionExample = createCollection("Mad");
+		List<Collection> found = collectionService.findAll().collectList().block();
 
-		List<Collection> found = collectionService.findAll(collectionExample).collectList().block();
-
-		assertThat(found.size()).isEqualTo(2);
+		assertThat(found.size()).isEqualTo(4);
 	}
 
-	@DisplayName("Test ByExample (for example) Collection")
+	@DisplayName("Test FindAllByExample Collection")
 	@Test
-	public void whenFindAll_thenReturn4Collections() {
+	public void whenFindAllByExample_thenReturn2Collections() {
 		List<Collection> collections = new ArrayList<Collection>();
 		collections.add(createCollection("Mad Max Collection"));
 		collections.add(createCollection("Star Wars Collection"));
