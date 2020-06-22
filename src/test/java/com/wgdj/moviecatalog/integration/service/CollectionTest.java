@@ -125,8 +125,7 @@ public class CollectionTest {
 		collections.add(createCollection("Mad Man"));
 		collectionRepository.saveAll(collections).blockLast();
 
-		Collection collectionExample = new Collection();
-		collectionExample.setName("Mad");
+		Collection collectionExample = createCollection("Mad");
 
 		List<Collection> found = collectionService.findAll(collectionExample).collectList().block();
 
@@ -143,8 +142,7 @@ public class CollectionTest {
 		collections.add(createCollection("Mad Man"));
 		collectionRepository.saveAll(collections).blockLast();
 
-		Collection collectionExample = new Collection();
-		collectionExample.setName("Mad");
+		Collection collectionExample = createCollection("Mad");
 
 		List<Collection> found = collectionService.findAll(collectionExample).collectList().block();
 
@@ -152,9 +150,7 @@ public class CollectionTest {
 	}
 
 	private Collection createCollection(String name) {
-		Collection collection = new Collection();
-		collection.setName(name);
-		return collection;
+		return Collection.builder().name(name).build();
 	}
 
 }

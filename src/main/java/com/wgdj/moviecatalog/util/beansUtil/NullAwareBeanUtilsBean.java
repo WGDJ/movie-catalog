@@ -1,4 +1,4 @@
-package com.wgdj.moviecatalog.util;
+package com.wgdj.moviecatalog.util.beansUtil;
 
 import java.lang.reflect.InvocationTargetException;
 

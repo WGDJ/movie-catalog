@@ -6,17 +6,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
+@Builder
 @Document(collection = "companies")
 public class Company {
 
