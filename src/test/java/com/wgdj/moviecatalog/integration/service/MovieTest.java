@@ -158,24 +158,89 @@ public class MovieTest {
 
 	@DisplayName("Test FindAllByExample Movie")
 	@Test
-	public void whenFindByExample_thenReturn2Movies() {
+	public void whenFindByExample_thenReturnMovies() {
+		
 		List<Movie> movies = new ArrayList<Movie>();
 		movies.add(createMovie("Mad Max Movie"));
 		movies.add(createMovie("Star Wars Movie"));
 		movies.add(createMovie("Hannibal Lecter"));
 		movies.add(createMovie("Mad Man"));
 		movieRepository.saveAll(movies).blockLast();
+		
+		String inexistentId = "7bd7e93a-b4d8-11ea-b3de-0242ac130004";
 
-		List<Movie> found1 = movieService.findAll(Movie.builder().title("Mad").build()).collectList().block();
-		assertThat(found1.size()).isEqualTo(2);
+		List<Movie> foundByTitle = movieService.findAll(Movie.builder().title("Mad").build()).collectList().block();
+		assertThat(foundByTitle.size()).isEqualTo(2);
 
-		List<Movie> found2 = movieService
+		List<Movie> foundByCollection = movieService
 				.findAll(Movie.builder()
 						.belongsToCollection(Collection.builder()
 								.id(movies.iterator().next().getBelongsToCollection().getId()).build())
 						.build())
 				.collectList().block();
-		assertThat(found2.size()).isEqualTo(1);
+		assertThat(foundByCollection.size()).isEqualTo(1);
+		
+		List<Movie> notFoundByCollection = movieService
+				.findAll(Movie.builder()
+						.belongsToCollection(Collection.builder()
+								.id(inexistentId).build())
+						.build())
+				.collectList().block();
+		assertThat(notFoundByCollection.size()).isEqualTo(0);
+
+		List<Movie> foundByGenre = movieService
+				.findAll(Movie.builder()
+						.genres(Arrays.asList(Genre.builder()
+								.id(movies.iterator().next().getGenres().iterator().next().getId()).build()))
+						.build())
+				.collectList().block();
+		assertThat(foundByGenre.size()).isEqualTo(1);
+		
+		
+		
+		List<Movie> notFoundByGenre = movieService
+				.findAll(Movie.builder().genres(Arrays.asList(Genre.builder().id(inexistentId).build())).build())
+				.collectList().block();
+		assertThat(notFoundByGenre.size()).isEqualTo(0);
+		
+		List<Movie> foundByCompany = movieService
+				.findAll(Movie.builder()
+						.productionCompanies(Arrays.asList(Company.builder()
+								.id(movies.iterator().next().getProductionCompanies().iterator().next().getId()).build()))
+						.build())
+				.collectList().block();
+		assertThat(foundByCompany.size()).isEqualTo(1);
+		
+		List<Movie> notFoundByCompany = movieService
+				.findAll(Movie.builder().productionCompanies(Arrays.asList(Company.builder().id(inexistentId).build())).build())
+				.collectList().block();
+		assertThat(notFoundByCompany.size()).isEqualTo(0);
+		
+		List<Movie> foundByCountry = movieService
+				.findAll(Movie.builder()
+						.productionCountries(Arrays.asList(Country.builder()
+								.id(movies.iterator().next().getProductionCountries().iterator().next().getId()).build()))
+						.build())
+				.collectList().block();
+		assertThat(foundByCountry.size()).isEqualTo(1);
+		
+		List<Movie> notFoundByCountry = movieService
+				.findAll(Movie.builder().productionCountries(Arrays.asList(Country.builder().id(inexistentId).build())).build())
+				.collectList().block();
+		assertThat(notFoundByCountry.size()).isEqualTo(0);
+		
+		List<Movie> foundByLanguage = movieService
+				.findAll(Movie.builder()
+						.spokenLanguages(Arrays.asList(Language.builder()
+								.id(movies.iterator().next().getSpokenLanguages().iterator().next().getId()).build()))
+						.build())
+				.collectList().block();
+		assertThat(foundByLanguage.size()).isEqualTo(1);
+		
+		List<Movie> notFoundByLanguage = movieService
+				.findAll(Movie.builder().spokenLanguages(Arrays.asList(Language.builder().id(inexistentId).build())).build())
+				.collectList().block();
+		assertThat(notFoundByLanguage.size()).isEqualTo(0);
 
 	}
 
