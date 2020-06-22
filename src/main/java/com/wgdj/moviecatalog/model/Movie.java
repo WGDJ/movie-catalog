@@ -7,8 +7,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,10 +22,9 @@ import lombok.ToString;
 @ToString
 @Builder
 @Document(collection = "movies")
-public class Movie {
+public class Movie implements Entity {
 
 	@Id
-	@Indexed(unique = true)
 	public String id;
 
 	@NotNull(message = "Flag adult is required.")
@@ -65,27 +62,24 @@ public class Movie {
 	@NotNull(message = "Movie collection is required.")
 	public Collection belongsToCollection;
 
-//	@NotNull(message = "Movie genre is required.")
-//	@CascadeSave
-//	@Transient
-//	public List<Genre> genres;
-//	
-//	@NotNull(message = "Movie genre is required.")
-//	public List<String> genresIds;
+	@DBRef
+	@CascadeSave
+	@NotNull(message = "Movie genre is required.")
+	public List<Genre> genres;
+	
+	@DBRef
+	@CascadeSave
+	@NotNull(message = "Production companies is required.")
+	public List<Company> productionCompanies;
 
-//	@CascadeSave
-//	@DBRef
-//	@NotNull(message = "Production companies is required.")
-//	public List<Company> productionCompanies;
-//
-//	@CascadeSave
-//	@DBRef
-//	@NotNull(message = "Production countries is required.")
-//	public List<Country> productionCountries;
-//
-//	@CascadeSave
-//	@DBRef
-//	@NotNull(message = "Spoken languages is required.")
-//	public List<Language> spokenLanguages;
+	@DBRef
+	@CascadeSave
+	@NotNull(message = "Production countries is required.")
+	public List<Country> productionCountries;
+
+	@DBRef
+	@CascadeSave
+	@NotNull(message = "Spoken languages is required.")
+	public List<Language> spokenLanguages;
 
 }

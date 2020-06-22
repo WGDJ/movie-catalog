@@ -4,22 +4,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.1.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
-
 	<groupId>com.wgdj</groupId>
 	<artifactId>movie-catalog</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>movie-catalog</name>
 	<description>Simple and Reactive Movie Catalog</description>
 
-	<scm>
-		<connection>scm:git:https://github.com/WGDJ/movie-catalog.git</connection>
-	</scm>
+	<!-- <scm> -->
+	<!-- <connection>scm:git:https://github.com/WGDJ/movie-catalog.git</connection> -->
+	<!-- </scm> -->
 
 	<properties>
 		<java.version>11</java.version>
@@ -29,6 +22,15 @@
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<pringfox-swagger2.version>2.9.2</pringfox-swagger2.version>
 	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<!-- spring-boot-starter-parent 2.2.8.RELEASE is necessary to avoid for 
+			mongodb exception (DBRef resolution is not supported!) -->
+		<version>2.2.8.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
 
 	<dependencies>
 
@@ -81,12 +83,6 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>${commons-beanutils.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${pringfox-swagger2.version}</version>
 		</dependency>
 
 	</dependencies>

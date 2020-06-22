@@ -15,6 +15,8 @@ import com.wgdj.moviecatalog.model.Country;
 import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.model.Movie;
+import com.wgdj.moviecatalog.service.collection.CollectionService;
+import com.wgdj.moviecatalog.service.collection.CollectionServiceInterface;
 import com.wgdj.moviecatalog.service.movie.MovieServiceInterface;
 
 @Service
@@ -22,13 +24,18 @@ public class Teste {
 
 	@Autowired
 	private MovieServiceInterface movieService;
+	
 	public void testar() {
+		
+//		Collection c = collectionService.save(Collection.builder().name("Hanibal").build()).block();
 		
 		String title = "Mad Max Movie";
 		Movie movie = createMovie(title);
 		movie = movieService.save(movie).block();
 		
-		System.out.println(movie);
+		Movie found = movieService.findById(movie.getId()).block();
+		
+		System.out.println(found);
 		
 	}
 	
@@ -44,18 +51,18 @@ public class Teste {
 		.releaseDate(Date.from(LocalDate.of(2001, 02, 20).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
 		.status("Released")
 		.belongsToCollection(Collection.builder().name("Hanibal").build())
-//		.genres(Arrays.asList(
-//				Genre.builder().name("Horror").build(),  
-//				Genre.builder().name("Drama").build()))
-//		.productionCompanies(Arrays.asList(
-//				Company.builder().name("Kennedy Miller Productions").originCountry("US").build(),  
-//				Company.builder().name("Warner Bros. Pictures").originCountry("US").build()))
-//		.productionCountries(Arrays.asList(
-//				Country.builder().name("Australia").iso31661("AU").build(),  
-//				Country.builder().name("United States of America").iso31661("US").build()))
-//		.spokenLanguages(Arrays.asList(
-//				Language.builder().name("Australia").iso6391("au").build(),  
-//				Language.builder().name("United States of America").iso6391("us").build()))
+		.genres(Arrays.asList(
+				Genre.builder().name("Horror").build(),  
+				Genre.builder().name("Drama").build()))
+		.productionCompanies(Arrays.asList(
+				Company.builder().name("Kennedy Miller Productions").originCountry("US").build(),  
+				Company.builder().name("Warner Bros. Pictures").originCountry("US").build()))
+		.productionCountries(Arrays.asList(
+				Country.builder().name("Australia").iso31661("AU").build(),  
+				Country.builder().name("United States of America").iso31661("US").build()))
+		.spokenLanguages(Arrays.asList(
+				Language.builder().name("Australia").iso6391("au").build(),  
+				Language.builder().name("United States of America").iso6391("us").build()))
 		.build();
 	}
 

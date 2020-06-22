@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.util.ReflectionUtils;
 
+import com.wgdj.moviecatalog.model.Entity;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,11 +37,16 @@ public class CascadeCallback implements ReflectionUtils.FieldCallback {
 				ReflectionUtils.doWithFields(fieldValue.getClass(), callback);
 				
 				if(fieldValue instanceof Collection<?>) {
-					Collection<?> items = (Collection<?>)fieldValue;
-					items.forEach(item -> getMongoOperations().save(item).block());
-					System.out.println(items);
+					Collection<Entity> items = (Collection<Entity>)fieldValue;
+					items.forEach(item -> {
+						if(item.getId() == null) {
+							getMongoOperations().save(item).block();
+						}
+					});
 				} else {
-					getMongoOperations().save(fieldValue).block();
+					if(((Entity) fieldValue).getId() == null) {
+						getMongoOperations().save(fieldValue).block();
+					}
 				}
 
 			}
