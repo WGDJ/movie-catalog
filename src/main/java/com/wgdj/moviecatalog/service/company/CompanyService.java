@@ -24,12 +24,12 @@ public class CompanyService implements CompanyServiceInterface {
 	private BeanUtilsBean beanUtilsBean;
 
 	@Override
-	public Mono<Company> save(Company company) {
+	public Mono<Company> save(final Company company) {
 		return companyRepository.save(company);
 	}
 
 	@Override
-	public Mono<Company> update(Company company) {
+	public Mono<Company> update(final Company company) {
 		try {
 			Company companyToUpdate = companyRepository.findById(company.getId()).block();
 
@@ -43,12 +43,12 @@ public class CompanyService implements CompanyServiceInterface {
 	}
 
 	@Override
-	public Mono<Company> findById(String id) {
+	public Mono<Company> findById(final String id) {
 		return companyRepository.findById(id);
 	}
 
 	@Override
-	public Flux<Company> findAll(Company company) {
+	public Flux<Company> findAll(final Company company) {
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 				.withStringMatcher(StringMatcher.STARTING);
 		Example<Company> example = Example.of(company, matcher);

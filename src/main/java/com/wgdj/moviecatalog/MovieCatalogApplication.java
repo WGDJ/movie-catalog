@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.wgdj.moviecatalog.util.beansUtil.NullAwareBeanUtilsBean;
+import com.wgdj.moviecatalog.util.beansUtil.NullAwareBeanUtils;
 import com.wgdj.moviecatalog.util.mongoCascade.CascadeSaveMongoEventListener;
 
 @SpringBootApplication
@@ -16,10 +16,6 @@ public class MovieCatalogApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MovieCatalogApplication.class, args);
-
-//		ConfigurableApplicationContext cac = SpringApplication.run(MovieCatalogApplication.class, args);
-//		Teste t = cac.getBean(Teste.class);
-//		t.testar();
 	}
 
 	@Bean
@@ -34,7 +30,7 @@ public class MovieCatalogApplication {
 
 	@Bean
 	public BeanUtilsBean beansUtils(LocalValidatorFactoryBean lfb) {
-		return new NullAwareBeanUtilsBean();
+		return new NullAwareBeanUtils();
 	}
 
 	@Bean

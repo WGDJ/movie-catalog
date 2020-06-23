@@ -1,6 +1,5 @@
 package com.wgdj.moviecatalog.service.collection;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Collection;
 import com.wgdj.moviecatalog.repository.CollectionRepository;
+import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,35 +21,58 @@ public class CollectionService implements CollectionServiceInterface {
 	private CollectionRepository collectionRepository;
 
 	@Autowired
-	private BeanUtilsBean beanUtilsBean;
+	private BeansUtil beanUtilsBean;
 
 	@Override
-	public Mono<Collection> save(Collection collection) {
+	public Mono<Collection> save(final Collection collection) {
 		return collectionRepository.save(collection);
 	}
 
+//	@Override
+//	public Mono<Collection> update(final Collection collection) {
+//
+//		try {
+//			Collection collectionToUpdate = collectionRepository.findById(collection.getId()).block();
+//
+//			beanUtilsBean.copyProperties(collectionToUpdate, collection);
+//
+//			return collectionRepository.save(collectionToUpdate);
+//
+//		} catch (Exception e) {
+//			throw new DatabaseObjectNotFoundException("Collection", collection.getId());
+//		}
+//	}
+
+//	Mono.just(userId)
+//    .map(repo::findById)
+//    .handle((user, sink) -> {
+//        if(!isValid(user)){
+//            sink.error(new InvalidUserException());
+//        } else if (isSendable(user))
+//            sink.next(user);
+//        }
+//        else {
+//            //just ignore element
+//        }
+//    })
+
 	@Override
-	public Mono<Collection> update(Collection collection) {
-
-		try {
-			Collection collectionToUpdate = collectionRepository.findById(collection.getId()).block();
-
+	public Mono<Collection> update(final Collection collection) {
+		return collectionRepository.findById(collection.getId()).map(collectionToUpdate -> {
 			beanUtilsBean.copyProperties(collectionToUpdate, collection);
+			return collectionToUpdate;
+		}).flatMap(collectionRepository::save)
+		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Collection", collection.getId())));
 
-			return collectionRepository.save(collectionToUpdate);
-
-		} catch (Exception e) {
-			throw new DatabaseObjectNotFoundException("Collection", collection.getId());
-		}
 	}
 
 	@Override
-	public Mono<Collection> findById(String id) {
+	public Mono<Collection> findById(final String id) {
 		return collectionRepository.findById(id);
 	}
 
 	@Override
-	public Flux<Collection> findAll(Collection collection) {
+	public Flux<Collection> findAll(final Collection collection) {
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 				.withStringMatcher(StringMatcher.STARTING);
 		Example<Collection> example = Example.of(collection, matcher);

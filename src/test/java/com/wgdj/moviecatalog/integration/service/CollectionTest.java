@@ -124,7 +124,7 @@ public class CollectionTest {
 		});
 
 		assertThat(exception.getMessage()).isEqualTo(
-				(String.format("%s with the %s entered in the database was not found.", "Collection", idNotExists)));
+				(String.format("No %s found with the given id: %s.", "Collection", idNotExists)));
 
 	}
 

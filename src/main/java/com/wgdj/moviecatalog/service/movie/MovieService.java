@@ -2,7 +2,6 @@ package com.wgdj.moviecatalog.service.movie;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.BasicDBList;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
-import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.model.Movie;
 import com.wgdj.moviecatalog.repository.MovieRepository;
 
@@ -35,7 +32,7 @@ public class MovieService implements MovieServiceInterface {
 	}
 
 	@Override
-	public Mono<Movie> update(Movie movie) {
+	public Mono<Movie> update(final Movie movie) {
 
 		try {
 			Movie movieToUpdate = this.findById(movie.getId()).block();
@@ -51,13 +48,13 @@ public class MovieService implements MovieServiceInterface {
 	}
 
 	@Override
-	public Mono<Movie> findById(String id) {
+	public Mono<Movie> findById(final String id) {
 		return movieRepository.findById(id);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Flux<Movie> findAll(Movie movie) {
+	public Flux<Movie> findAll(final Movie movie) {
 
 		ExampleMatcher matcher = ExampleMatcher.matching()
             .withIgnoreNullValues()

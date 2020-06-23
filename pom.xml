@@ -26,8 +26,9 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<!-- The aplication dont works whith version 3 of spring-boot-starter-parent.  :( -  (DBRef resolution is not supported!)-->
+		<!-- The aplication dont works whith version 3 of spring-boot-starter-parent.  :( -  (DBRef resolution is not supported!) and "reactor-http-epoll-3" block() not supported-->
 		<version>2.2.8.RELEASE</version>
+<!-- 		<version>2.0.0.RELEASE</version> -->
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -67,11 +68,11 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>cz.jirutka.spring</groupId>
-			<artifactId>embedmongo-spring</artifactId>
-			<version>${embedmongo-spring.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>cz.jirutka.spring</groupId> -->
+<!-- 			<artifactId>embedmongo-spring</artifactId> -->
+<!-- 			<version>${embedmongo-spring.version}</version> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
