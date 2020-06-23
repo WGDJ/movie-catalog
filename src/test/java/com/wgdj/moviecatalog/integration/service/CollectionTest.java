@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
+import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Collection;
 import com.wgdj.moviecatalog.repository.CollectionRepository;
 import com.wgdj.moviecatalog.service.collection.CollectionServiceInterface;

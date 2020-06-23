@@ -1,4 +1,4 @@
-package com.wgdj.moviecatalog.exceptions;
+package com.wgdj.moviecatalog.exception;
 public class DatabaseObjectNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

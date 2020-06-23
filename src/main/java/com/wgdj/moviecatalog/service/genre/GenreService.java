@@ -7,7 +7,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Component;
 
-import com.wgdj.moviecatalog.exceptions.DatabaseObjectNotFoundException;
+import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.repository.GenreRepository;
 
