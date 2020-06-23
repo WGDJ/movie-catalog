@@ -62,7 +62,7 @@ public class PopulatorMovieTest {
 				.spokenLanguages(Arrays.asList(Language.builder().name("English").iso6391("au").build(),
 						Language.builder().name("English").iso6391("us").build()))
 				.build();
-		return save(movie);
+		return movieRepository.save(movie).block();
 	}
 
 	public Movie createMovie(String title) {
@@ -95,10 +95,6 @@ public class PopulatorMovieTest {
 
 	public Language createAndSaveLanguage(String name) {
 		return languageService.save(Language.builder().name(name).iso6391("us").build()).block();
-	}
-	
-	private Movie save(Movie movie) {
-		return movieRepository.save(movie).block();
 	}
 	
 	public List<Movie> saveAll(List<Movie> movies) {
