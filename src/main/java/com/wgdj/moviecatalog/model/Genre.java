@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 @Document(collection = "genres")
-public class Genre implements Entity {
+public class Genre {
 
 	@Id
 	public String id;

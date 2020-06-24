@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(value = { "belongsToCollectionId", "genresIds", "productionCompaniesIds",
 		"productionCountriesIds", "spokenLanguagesIds" })
 @Document(collection = "movies")
-public class Movie implements Entity {
+public class Movie {
 
 	@Id
 	public String id;

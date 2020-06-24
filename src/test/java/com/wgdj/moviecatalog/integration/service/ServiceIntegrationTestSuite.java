@@ -4,8 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.wgdj.moviecatalog.integration.service.movie.MovieTest;
+import com.wgdj.moviecatalog.integration.service.movie.MovieServiceTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({CollectionTest.class, MovieTest.class})
+@SuiteClasses({CollectionServiceTest.class, MovieServiceTest.class})
 public class ServiceIntegrationTestSuite {}

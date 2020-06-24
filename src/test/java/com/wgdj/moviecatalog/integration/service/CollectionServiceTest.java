@@ -24,7 +24,7 @@ import com.wgdj.moviecatalog.service.collection.CollectionServiceInterface;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DisplayName("Persitence testes for entity Collection")
-public class CollectionTest {
+public class CollectionServiceTest {
 
 	@Autowired
 	private CollectionRepository collectionRepository;

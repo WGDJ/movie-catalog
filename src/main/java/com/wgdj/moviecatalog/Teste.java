@@ -27,7 +27,7 @@ public class Teste {
 	
 	public void testar() {
 		
-//		Collection c = collectionService.save(Collection.builder().name("Hanibal").build()).block();
+//		Collection c = collectionService.save(Collection.builder().name("Hannibal").build()).block();
 		
 		String title = "Mad Max Movie";
 		Movie movie = createMovie(title);
@@ -50,7 +50,7 @@ public class Teste {
 		.imdbId("57377")
 		.releaseDate(Date.from(LocalDate.of(2001, 02, 20).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
 		.status("Released")
-		.belongsToCollection(Collection.builder().name("Hanibal").build())
+		.belongsToCollection(Collection.builder().name("Hannibal").build())
 		.genres(Arrays.asList(
 				Genre.builder().name("Horror").build(),  
 				Genre.builder().name("Drama").build()))

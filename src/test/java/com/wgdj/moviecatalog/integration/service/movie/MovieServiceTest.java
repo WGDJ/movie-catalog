@@ -29,28 +29,26 @@ import com.wgdj.moviecatalog.service.movie.MovieServiceInterface;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DisplayName("Persitence testes for entity Movie")
-public class MovieTest {
+public class MovieServiceTest {
 
 	@Autowired
 	private MovieServiceInterface movieService;
 
 	@Autowired
-	private PopulatorMovieTest populatorMovieTest;
+	private PopulatorServiceMovieTest populatorMovieTest;
 	
 	@Before
 	public void init() {
 		populatorMovieTest.clearMongoCollections();
 	}
 
-//		StepVerifier
-	
 	@DisplayName("Test save cascade with required filds not null and not blank")
 	@Test
 	public void whenSaveCascadeWithRequredFildsNotBlank_thenReturnMovieFindById() {
 		String title = "Mad Max Movie";
 		
 		
-		Movie movie = populatorMovieTest.createAnSaveMovieCascade(title);
+		Movie movie = populatorMovieTest.createAnSaveMovieWithAllChilds(title);
 
 		Movie found = movieService.findById(movie.getId()).block();
 
@@ -102,7 +100,7 @@ public class MovieTest {
 		String title = "Mad Max Movie";
 		Movie movie = populatorMovieTest.createMovie(title);
 		
-		String collectionName = "Hanibal";
+		String collectionName = "Hannibal";
 		Collection collection = populatorMovieTest.createAndSaveCollection(collectionName);
 		String genreName = "Action";
 		Genre genre = populatorMovieTest.createAndSaveGenre(genreName);
@@ -149,7 +147,7 @@ public class MovieTest {
 	@DisplayName("Test update with existing id and field not blank")
 	@Test
 	public void whenUpdateWithExistIdAndFieldNotBlank_thenUpdateCollection() {
-		Movie movie = populatorMovieTest.createAnSaveMovieCascade("Mad Max Movie");
+		Movie movie = populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Max Movie");
 
 		assertThat(movie.getId()).isNotNull();
 
@@ -177,7 +175,7 @@ public class MovieTest {
 	public void whenUpdateWithExistIdAndFieldBlankAndNull_thenThrowsException() {
 
 		Exception exception = assertThrows(ValidationException.class, () -> {
-			Movie movie = populatorMovieTest.createAnSaveMovieCascade("Mad Max Movie");
+			Movie movie = populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Max Movie");
 			assertThat(movie.getId()).isNotNull();
 
 			String newTitle = "";
@@ -194,10 +192,10 @@ public class MovieTest {
 	@Test
 	public void whenFindAll_thenReturn4Movies() {
 		List<Movie> movies = new ArrayList<Movie>();
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Mad Max Movie"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Star Wars Movie"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Hannibal Lecter"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Mad Man"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Max Movie"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Star Wars Movie"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Hannibal Lecter"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Man"));
 		populatorMovieTest.saveAll(movies);
 
 		List<Movie> found1 = movieService.findAll().collectList().block();
@@ -210,10 +208,10 @@ public class MovieTest {
 	public void whenFindByExample_thenReturnMovies() {
 
 		List<Movie> movies = new ArrayList<Movie>();
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Mad Max Movie"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Star Wars Movie"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Hannibal Lecter"));
-		movies.add(populatorMovieTest.createAnSaveMovieCascade("Mad Man"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Max Movie"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Star Wars Movie"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Hannibal Lecter"));
+		movies.add(populatorMovieTest.createAnSaveMovieWithAllChilds("Mad Man"));
 		populatorMovieTest.saveAll(movies);
 
 		String inexistentId = "7bd7e93a-b4d8-11ea-b3de-0242ac130004";

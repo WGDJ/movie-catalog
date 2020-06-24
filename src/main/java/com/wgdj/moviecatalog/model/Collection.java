@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 @Document(collection = "collections")
-public class Collection implements Entity {
+public class Collection {
 
 	@Id
 	public String id;

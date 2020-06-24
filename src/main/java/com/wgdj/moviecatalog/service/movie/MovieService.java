@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -21,7 +20,6 @@ import com.wgdj.moviecatalog.service.genre.GenreService;
 import com.wgdj.moviecatalog.service.language.LanguageService;
 import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
-import reactor.core.CorePublisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -51,7 +49,7 @@ public class MovieService implements MovieServiceInterface {
 
 	@Override
 	public Mono<Movie> save(Movie movie) {
-		return movieRepository.save(movie).flatMap(compose());
+		return movieRepository.save(movie).flatMap(composeMono());
 	}
 
 	@Override
@@ -61,12 +59,12 @@ public class MovieService implements MovieServiceInterface {
 			return movieToUpdate;
 		}).flatMap(movieRepository::save)
 		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Movie", movie.getId())))
-		.flatMap(compose());
+		.flatMap(composeMono());
 	}
 
 	@Override
 	public Mono<Movie> findById(final String id) {
-		return movieRepository.findById(id).flatMap(compose());
+		return movieRepository.findById(id).flatMap(composeMono());
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -88,16 +86,16 @@ public class MovieService implements MovieServiceInterface {
 					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
 				}).contains());
 
-		return movieRepository.findAll(Example.of(movie, matcher)).flatMap(compose());
+		return movieRepository.findAll(Example.of(movie, matcher)).flatMap(composeMono());
 
 	}
 
 	@Override
 	public Flux<Movie> findAll() {
-		return movieRepository.findAll().flatMap(compose());
+		return movieRepository.findAll().flatMap(composeMono());
 	}
 	
-	private Function<? super Movie, ? extends Mono<? extends Movie>> compose() {
+	private Function<? super Movie, ? extends Mono<? extends Movie>> composeMono() {
 		return mov -> Mono.just(mov)
 		.zipWith(collectionService.findById(mov.getBelongsToCollectionId()), (u, p) -> {
 			u.setBelongsToCollection(p);

@@ -30,7 +30,7 @@ import com.wgdj.moviecatalog.service.language.LanguageService;
 import com.wgdj.moviecatalog.service.movie.MovieService;
 
 @Component
-public class PopulatorMovieTest {
+public class PopulatorServiceMovieTest {
 
 	@Autowired
 	private MovieRepository movieRepository;
@@ -68,9 +68,9 @@ public class PopulatorMovieTest {
 	@Autowired
 	private LanguageService languageService;
 
-	public Movie createAnSaveMovieCascade(String title) {
+	public Movie createAnSaveMovieWithAllChilds(String title) {
 
-		Collection collection = createAndSaveCollection("Hanibal");
+		Collection collection = createAndSaveCollection("Hannibal");
 		Genre genge1 = createAndSaveGenre("Horror");
 		Genre genge2 = createAndSaveGenre("Drama");
 		Company company1 = createAndSaveCompany("Kennedy Miller Productions");
