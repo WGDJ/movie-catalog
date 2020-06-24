@@ -1,6 +1,5 @@
 package com.wgdj.moviecatalog.service.language;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.repository.LanguageRepository;
+import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +21,7 @@ public class LanguageService implements LanguageServiceInterface {
 	private LanguageRepository languageRepository;
 
 	@Autowired
-	private BeanUtilsBean beanUtilsBean;
+	private BeansUtil beanUtils;
 
 	@Override
 	public Mono<Language> save(final Language language) {
@@ -30,16 +30,11 @@ public class LanguageService implements LanguageServiceInterface {
 
 	@Override
 	public Mono<Language> update(final Language language) {
-		try {
-			Language languageToUpdate = languageRepository.findById(language.getId()).block();
-
-			beanUtilsBean.copyProperties(languageToUpdate, language);
-
-			return languageRepository.save(languageToUpdate);
-
-		} catch (Exception e) {
-			throw new DatabaseObjectNotFoundException("Language", language.getId());
-		}
+		return languageRepository.findById(language.getId()).map(languageToUpdate -> {
+			beanUtils.copyProperties(languageToUpdate, language);
+			return languageToUpdate;
+		}).flatMap(languageRepository::save)
+		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Language", language.getId())));
 	}
 
 	@Override

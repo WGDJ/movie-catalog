@@ -3,7 +3,6 @@ package com.wgdj.moviecatalog.service.movie;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Movie;
 import com.wgdj.moviecatalog.repository.MovieRepository;
+import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,7 +24,7 @@ public class MovieService implements MovieServiceInterface {
 	private MovieRepository movieRepository;
 	
 	@Autowired
-	private BeanUtilsBean beanUtilsBean;
+	private BeansUtil beanUtils;
 
 	@Override
 	public Mono<Movie> save(Movie movie) {
@@ -33,18 +33,11 @@ public class MovieService implements MovieServiceInterface {
 
 	@Override
 	public Mono<Movie> update(final Movie movie) {
-
-		try {
-			Movie movieToUpdate = this.findById(movie.getId()).block();
-
-			beanUtilsBean.copyProperties(movieToUpdate, movie);
-
-			return movieRepository.save(movieToUpdate);
-
-		} catch (Exception e) {
-			throw new DatabaseObjectNotFoundException("Movie", movie.getId());
-		}
-
+		return movieRepository.findById(movie.getId()).map(movieToUpdate -> {
+			beanUtils.copyProperties(movieToUpdate, movie);
+			return movieToUpdate;
+		}).flatMap(movieRepository::save)
+		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Movie", movie.getId())));
 	}
 
 	@Override

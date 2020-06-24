@@ -21,49 +21,20 @@ public class CollectionService implements CollectionServiceInterface {
 	private CollectionRepository collectionRepository;
 
 	@Autowired
-	private BeansUtil beanUtilsBean;
+	private BeansUtil beanUtils;
 
 	@Override
 	public Mono<Collection> save(final Collection collection) {
 		return collectionRepository.save(collection);
 	}
 
-//	@Override
-//	public Mono<Collection> update(final Collection collection) {
-//
-//		try {
-//			Collection collectionToUpdate = collectionRepository.findById(collection.getId()).block();
-//
-//			beanUtilsBean.copyProperties(collectionToUpdate, collection);
-//
-//			return collectionRepository.save(collectionToUpdate);
-//
-//		} catch (Exception e) {
-//			throw new DatabaseObjectNotFoundException("Collection", collection.getId());
-//		}
-//	}
-
-//	Mono.just(userId)
-//    .map(repo::findById)
-//    .handle((user, sink) -> {
-//        if(!isValid(user)){
-//            sink.error(new InvalidUserException());
-//        } else if (isSendable(user))
-//            sink.next(user);
-//        }
-//        else {
-//            //just ignore element
-//        }
-//    })
-
 	@Override
 	public Mono<Collection> update(final Collection collection) {
 		return collectionRepository.findById(collection.getId()).map(collectionToUpdate -> {
-			beanUtilsBean.copyProperties(collectionToUpdate, collection);
+			beanUtils.copyProperties(collectionToUpdate, collection);
 			return collectionToUpdate;
 		}).flatMap(collectionRepository::save)
 		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Collection", collection.getId())));
-
 	}
 
 	@Override

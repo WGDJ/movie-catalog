@@ -1,6 +1,5 @@
 package com.wgdj.moviecatalog.service.country;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Country;
 import com.wgdj.moviecatalog.repository.CountryRepository;
+import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +21,7 @@ public class CountryService implements CountryServiceInterface {
 	private CountryRepository countryRepository;
 
 	@Autowired
-	private BeanUtilsBean beanUtilsBean;
+	private BeansUtil beanUtils;
 
 	@Override
 	public Mono<Country> save(final Country country) {
@@ -30,16 +30,11 @@ public class CountryService implements CountryServiceInterface {
 
 	@Override
 	public Mono<Country> update(final Country country) {
-		try {
-			Country countryToUpdate = countryRepository.findById(country.getId()).block();
-
-			beanUtilsBean.copyProperties(countryToUpdate, country);
-
-			return countryRepository.save(countryToUpdate);
-
-		} catch (Exception e) {
-			throw new DatabaseObjectNotFoundException("Country", country.getId());
-		}
+		return countryRepository.findById(country.getId()).map(countryToUpdate -> {
+			beanUtils.copyProperties(countryToUpdate, country);
+			return countryToUpdate;
+		}).flatMap(countryRepository::save)
+		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Country", country.getId())));
 	}
 
 	@Override

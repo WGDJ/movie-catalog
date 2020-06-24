@@ -58,29 +58,19 @@ public class Movie implements Entity {
 	@NotBlank(message = "Status is required.")
 	public String status;
 
-	@DBRef
-	@CascadeSave
 	@NotNull(message = "Collection is required.")
-	public Collection belongsToCollection;
+	public String belongsToCollection;
 
-	@DBRef
-	@CascadeSave
 	@NotNull(message = "Genre is required.")
-	public List<Genre> genres;
+	public List<String> genres;
 	
-	@DBRef
-	@CascadeSave
 	@NotNull(message = "Production companies is required.")
-	public List<Company> productionCompanies;
+	public List<String> productionCompanies;
 
-	@DBRef
-	@CascadeSave
 	@NotNull(message = "Production countries is required.")
-	public List<Country> productionCountries;
+	public List<String> productionCountries;
 
-	@DBRef
-	@CascadeSave
 	@NotNull(message = "Spoken languages is required.")
-	public List<Language> spokenLanguages;
+	public List<String> spokenLanguages;
 
 }
