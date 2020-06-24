@@ -2,7 +2,9 @@ package com.wgdj.moviecatalog.service.movie;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -12,8 +14,14 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Movie;
 import com.wgdj.moviecatalog.repository.MovieRepository;
+import com.wgdj.moviecatalog.service.collection.CollectionService;
+import com.wgdj.moviecatalog.service.company.CompanyService;
+import com.wgdj.moviecatalog.service.country.CountryService;
+import com.wgdj.moviecatalog.service.genre.GenreService;
+import com.wgdj.moviecatalog.service.language.LanguageService;
 import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
 
+import reactor.core.CorePublisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,11 +32,26 @@ public class MovieService implements MovieServiceInterface {
 	private MovieRepository movieRepository;
 	
 	@Autowired
+	private CollectionService collectionService;
+
+	@Autowired
+	private GenreService genreService;
+
+	@Autowired
+	private CompanyService companyService;
+
+	@Autowired
+	private CountryService countryService;
+
+	@Autowired
+	private LanguageService languageService;
+
+	@Autowired
 	private BeansUtil beanUtils;
 
 	@Override
 	public Mono<Movie> save(Movie movie) {
-		return movieRepository.save(movie);
+		return movieRepository.save(movie).flatMap(compose());
 	}
 
 	@Override
@@ -37,41 +60,61 @@ public class MovieService implements MovieServiceInterface {
 			beanUtils.copyProperties(movieToUpdate, movie);
 			return movieToUpdate;
 		}).flatMap(movieRepository::save)
-		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Movie", movie.getId())));
+		.switchIfEmpty(Mono.error(new DatabaseObjectNotFoundException("Movie", movie.getId())))
+		.flatMap(compose());
 	}
 
 	@Override
 	public Mono<Movie> findById(final String id) {
-		return movieRepository.findById(id);
+		return movieRepository.findById(id).flatMap(compose());
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Flux<Movie> findAll(final Movie movie) {
 
-		ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreNullValues()
-            .withStringMatcher(StringMatcher.STARTING)
-            .withMatcher("genres", match -> match.transform(source -> {
-            	return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-            }).contains())
-            .withMatcher("productionCompanies", match -> match.transform(source -> {
-            	return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-            }).contains())
-            .withMatcher("productionCountries", match -> match.transform(source -> {
-            	return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-            }).contains())
-            .withMatcher("spokenLanguages", match -> match.transform(source -> {
-            	return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-            }).contains());
-		
-		Example<Movie> example = Example.of(movie, matcher);
-		return movieRepository.findAll(example);
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
+				.withStringMatcher(StringMatcher.STARTING)
+				.withMatcher("genresIds", match -> match.transform(source -> {
+					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
+				}).contains())
+				.withMatcher("productionCompaniesIds", match -> match.transform(source -> {
+					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
+				}).contains())
+				.withMatcher("productionCountriesIds", match -> match.transform(source -> {
+					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
+				}).contains())
+				.withMatcher("spokenLanguagesIds", match -> match.transform(source -> {
+					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
+				}).contains());
+
+		return movieRepository.findAll(Example.of(movie, matcher)).flatMap(compose());
+
 	}
 
 	@Override
 	public Flux<Movie> findAll() {
-		return movieRepository.findAll();
+		return movieRepository.findAll().flatMap(compose());
+	}
+	
+	private Function<? super Movie, ? extends Mono<? extends Movie>> compose() {
+		return mov -> Mono.just(mov)
+		.zipWith(collectionService.findById(mov.getBelongsToCollectionId()), (u, p) -> {
+			u.setBelongsToCollection(p);
+			return u;
+		}).zipWith(genreService.findAllById(mov.getGenresIds()).collectList(), (u, p) -> {
+			u.setGenres(p);
+			return u;
+		}).zipWith(companyService.findAllById(mov.getProductionCompaniesIds()).collectList(), (u, p) -> {
+			u.setProductionCompanies(p);
+			return u;
+		}).zipWith(countryService.findAllById(mov.getProductionCountriesIds()).collectList(), (u, p) -> {
+			u.setProductionCountries(p);
+			return u;
+		}).zipWith(languageService.findAllById(mov.getSpokenLanguagesIds()).collectList(), (u, p) -> {
+			u.setSpokenLanguages(p);
+			return u;
+		});
 	}
 
 }

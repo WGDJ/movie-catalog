@@ -1,5 +1,7 @@
 package com.wgdj.moviecatalog.service.language;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -40,6 +42,11 @@ public class LanguageService implements LanguageServiceInterface {
 	@Override
 	public Mono<Language> findById(final String id) {
 		return languageRepository.findById(id);
+	}
+	
+	@Override
+	public Flux<Language> findAllById(List<String> ids) {
+		return languageRepository.findAllById(ids);
 	}
 
 	@Override

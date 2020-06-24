@@ -8,10 +8,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.wgdj.moviecatalog.util.mongoCascade.CascadeSave;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(value = { "belongsToCollectionId", "genresIds", "productionCompaniesIds",
+		"productionCountriesIds", "spokenLanguagesIds" })
 @Document(collection = "movies")
 public class Movie implements Entity {
 
@@ -58,19 +60,34 @@ public class Movie implements Entity {
 	@NotBlank(message = "Status is required.")
 	public String status;
 
+	@Transient
+	public Collection belongsToCollection;
+
 	@NotNull(message = "Collection is required.")
-	public String belongsToCollection;
+	public String belongsToCollectionId;
+
+	@Transient
+	public List<Genre> genres;
 
 	@NotNull(message = "Genre is required.")
-	public List<String> genres;
-	
+	public List<String> genresIds;
+
+	@Transient
+	public List<Company> productionCompanies;
+
 	@NotNull(message = "Production companies is required.")
-	public List<String> productionCompanies;
+	public List<String> productionCompaniesIds;
+
+	@Transient
+	public List<Country> productionCountries;
 
 	@NotNull(message = "Production countries is required.")
-	public List<String> productionCountries;
+	public List<String> productionCountriesIds;
+
+	@Transient
+	public List<Language> spokenLanguages;
 
 	@NotNull(message = "Spoken languages is required.")
-	public List<String> spokenLanguages;
+	public List<String> spokenLanguagesIds;
 
 }

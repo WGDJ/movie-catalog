@@ -1,5 +1,7 @@
 package com.wgdj.moviecatalog.service.country;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -40,6 +42,11 @@ public class CountryService implements CountryServiceInterface {
 	@Override
 	public Mono<Country> findById(final String id) {
 		return countryRepository.findById(id);
+	}
+	
+	@Override
+	public Flux<Country> findAllById(List<String> ids) {
+		return countryRepository.findAllById(ids);
 	}
 
 	@Override

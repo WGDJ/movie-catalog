@@ -1,5 +1,7 @@
 package com.wgdj.moviecatalog.service.company;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -40,6 +42,11 @@ public class CompanyService implements CompanyServiceInterface {
 	@Override
 	public Mono<Company> findById(final String id) {
 		return companyRepository.findById(id);
+	}
+	
+	@Override
+	public Flux<Company> findAllById(List<String> ids) {
+		return companyRepository.findAllById(ids);
 	}
 
 	@Override

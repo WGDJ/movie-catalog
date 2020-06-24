@@ -39,13 +39,17 @@ public class MovieTest {
 	
 	@Before
 	public void init() {
-		populatorMovieTest.clearMongoCollection();
+		populatorMovieTest.clearMongoCollections();
 	}
 
+//		StepVerifier
+	
 	@DisplayName("Test save cascade with required filds not null and not blank")
 	@Test
 	public void whenSaveCascadeWithRequredFildsNotBlank_thenReturnMovieFindById() {
 		String title = "Mad Max Movie";
+		
+		
 		Movie movie = populatorMovieTest.createAnSaveMovieCascade(title);
 
 		Movie found = movieService.findById(movie.getId()).block();
@@ -73,21 +77,21 @@ public class MovieTest {
 			movieService.save(movie).block();
 		});
 
-		assertThat(exception.getMessage()).contains("adult: Flag adult is required.");
-		assertThat(exception.getMessage()).contains("productionCompanies: Production companies is required.");
-		assertThat(exception.getMessage()).contains("homepage: Homepage is required.");
-		assertThat(exception.getMessage()).contains("title: Title is required.");
-		assertThat(exception.getMessage()).contains("belongsToCollection: Collection is required.");
-		assertThat(exception.getMessage()).contains("spokenLanguages: Spoken languages is required.");
-		assertThat(exception.getMessage()).contains("status: Status is required.");
-		assertThat(exception.getMessage()).contains("productionCountries: Production countries is required.");
-		assertThat(exception.getMessage()).contains("imdbId: IMB id is required.");
-		assertThat(exception.getMessage()).contains("releaseDate: Release date is required.");
-		assertThat(exception.getMessage()).contains("budget: Budget is required.");
-		assertThat(exception.getMessage()).contains("originalTitle: Original title is required.");
-		assertThat(exception.getMessage()).contains("genres: Genre is required.");
-		assertThat(exception.getMessage()).contains("overview: Overview is required.");
-		assertThat(exception.getMessage()).contains("originalLanguage: Original language is required.");
+		assertThat(exception.getMessage()).contains("Flag adult is required.");
+		assertThat(exception.getMessage()).contains("Production companies is required.");
+		assertThat(exception.getMessage()).contains("Homepage is required.");
+		assertThat(exception.getMessage()).contains("Title is required.");
+		assertThat(exception.getMessage()).contains("Collection is required.");
+		assertThat(exception.getMessage()).contains("Spoken languages is required.");
+		assertThat(exception.getMessage()).contains("Status is required.");
+		assertThat(exception.getMessage()).contains("Production countries is required.");
+		assertThat(exception.getMessage()).contains("IMB id is required.");
+		assertThat(exception.getMessage()).contains("Release date is required.");
+		assertThat(exception.getMessage()).contains("Budget is required.");
+		assertThat(exception.getMessage()).contains("Original title is required.");
+		assertThat(exception.getMessage()).contains("Genre is required.");
+		assertThat(exception.getMessage()).contains("Overview is required.");
+		assertThat(exception.getMessage()).contains("Original language is required.");
 
 	}
 	
@@ -98,6 +102,8 @@ public class MovieTest {
 		String title = "Mad Max Movie";
 		Movie movie = populatorMovieTest.createMovie(title);
 		
+		String collectionName = "Hanibal";
+		Collection collection = populatorMovieTest.createAndSaveCollection(collectionName);
 		String genreName = "Action";
 		Genre genre = populatorMovieTest.createAndSaveGenre(genreName);
 		String companyName = "Warner Bros. Pictures";
@@ -107,10 +113,11 @@ public class MovieTest {
 		String languageName = "English";
 		Language language = populatorMovieTest.createAndSaveLanguage(languageName);
 		
-		movie.setGenres(Arrays.asList(Genre.builder().id(genre.getId()).build()));
-		movie.setProductionCompanies(Arrays.asList(Company.builder().id(company.getId()).build()));
-		movie.setProductionCountries(Arrays.asList(Country.builder().id(country.getId()).build()));
-		movie.setSpokenLanguages(Arrays.asList(Language.builder().id(language.getId()).build()));
+		movie.setBelongsToCollectionId(collection.getId());
+		movie.setGenresIds(Arrays.asList(genre.getId()));
+		movie.setProductionCompaniesIds(Arrays.asList(company.getId()));
+		movie.setProductionCountriesIds(Arrays.asList(country.getId()));
+		movie.setSpokenLanguagesIds(Arrays.asList(language.getId()));
 		
 		movie = movieService.save(movie).block();
 
@@ -122,6 +129,9 @@ public class MovieTest {
 
 		assertThat(found.getBudget()).isEqualTo(new BigDecimal(57000000.53));
 
+		assertThat(found.getBelongsToCollection()).isNotNull();
+		assertThat(found.getBelongsToCollection().getName()).isEqualTo(collectionName);
+		
 		assertThat(found.getGenres().size()).isEqualTo(1);
 		assertThat(found.getGenres().iterator().next().getName()).isEqualTo(genreName);
 		
@@ -145,10 +155,11 @@ public class MovieTest {
 
 		String newTitle = "Mad Max Collection - Updeted";
 		movie.setTitle(newTitle);
-		movie.setGenres(Arrays.asList(movie.getGenres().iterator().next()));
-		movie.setProductionCompanies(Arrays.asList(movie.getProductionCompanies().iterator().next()));
-		movie.setProductionCountries(Arrays.asList(movie.getProductionCountries().iterator().next()));
-		movie.setSpokenLanguages(new ArrayList<Language>());
+		movie.setBelongsToCollectionId(movie.getBelongsToCollection().getId());
+		movie.setGenresIds(Arrays.asList(movie.getGenres().iterator().next().getId()));
+		movie.setProductionCompaniesIds(Arrays.asList(movie.getProductionCompanies().iterator().next().getId()));
+		movie.setProductionCountriesIds(Arrays.asList(movie.getProductionCountries().iterator().next().getId()));
+		movie.setSpokenLanguagesIds(new ArrayList<String>());
 
 		Movie movieUpdate = movieService.update(movie).block();
 
@@ -212,60 +223,55 @@ public class MovieTest {
 
 		List<Movie> foundByCollection = movieService
 				.findAll(Movie.builder()
-						.belongsToCollection(Collection.builder()
-								.id(movies.iterator().next().getBelongsToCollection().getId()).build())
+						.belongsToCollectionId(movies.iterator().next().getBelongsToCollection().getId())
 						.build())
 				.collectList().block();
 		assertThat(foundByCollection.size()).isEqualTo(1);
 
 		List<Movie> notFoundByCollection = movieService
-				.findAll(Movie.builder().belongsToCollection(Collection.builder().id(inexistentId).build()).build())
+				.findAll(Movie.builder().belongsToCollectionId(inexistentId).build())
 				.collectList().block();
 		assertThat(notFoundByCollection.size()).isEqualTo(0);
 
 		List<Movie> foundByGenre = movieService
 				.findAll(Movie.builder()
-						.genres(Arrays.asList(Genre.builder()
-								.id(movies.iterator().next().getGenres().iterator().next().getId()).build()))
+						.genresIds(Arrays.asList(movies.iterator().next().getGenres().iterator().next().getId()))
 						.build())
 				.collectList().block();
 		assertThat(foundByGenre.size()).isEqualTo(1);
 
 		List<Movie> notFoundByGenre = movieService
-				.findAll(Movie.builder().genres(Arrays.asList(Genre.builder().id(inexistentId).build())).build())
+				.findAll(Movie.builder().genresIds(Arrays.asList(inexistentId)).build())
 				.collectList().block();
 		assertThat(notFoundByGenre.size()).isEqualTo(0);
 
 		List<Movie> foundByCompany = movieService.findAll(Movie.builder()
-				.productionCompanies(Arrays.asList(Company.builder()
-						.id(movies.iterator().next().getProductionCompanies().iterator().next().getId()).build()))
+				.productionCompaniesIds(Arrays.asList(movies.iterator().next().getProductionCompanies().iterator().next().getId()))
 				.build()).collectList().block();
 		assertThat(foundByCompany.size()).isEqualTo(1);
 
 		List<Movie> notFoundByCompany = movieService.findAll(
-				Movie.builder().productionCompanies(Arrays.asList(Company.builder().id(inexistentId).build())).build())
+				Movie.builder().productionCompaniesIds(Arrays.asList(inexistentId)).build())
 				.collectList().block();
 		assertThat(notFoundByCompany.size()).isEqualTo(0);
 
 		List<Movie> foundByCountry = movieService.findAll(Movie.builder()
-				.productionCountries(Arrays.asList(Country.builder()
-						.id(movies.iterator().next().getProductionCountries().iterator().next().getId()).build()))
+				.productionCountriesIds(Arrays.asList(movies.iterator().next().getProductionCountries().iterator().next().getId()))
 				.build()).collectList().block();
 		assertThat(foundByCountry.size()).isEqualTo(1);
 
 		List<Movie> notFoundByCountry = movieService.findAll(
-				Movie.builder().productionCountries(Arrays.asList(Country.builder().id(inexistentId).build())).build())
+				Movie.builder().productionCountriesIds(Arrays.asList(inexistentId)).build())
 				.collectList().block();
 		assertThat(notFoundByCountry.size()).isEqualTo(0);
 
 		List<Movie> foundByLanguage = movieService.findAll(Movie.builder()
-				.spokenLanguages(Arrays.asList(Language.builder()
-						.id(movies.iterator().next().getSpokenLanguages().iterator().next().getId()).build()))
+				.spokenLanguagesIds(Arrays.asList(movies.iterator().next().getSpokenLanguages().iterator().next().getId()))
 				.build()).collectList().block();
 		assertThat(foundByLanguage.size()).isEqualTo(1);
 
 		List<Movie> notFoundByLanguage = movieService.findAll(
-				Movie.builder().spokenLanguages(Arrays.asList(Language.builder().id(inexistentId).build())).build())
+				Movie.builder().spokenLanguagesIds(Arrays.asList(inexistentId)).build())
 				.collectList().block();
 		assertThat(notFoundByLanguage.size()).isEqualTo(0);
 

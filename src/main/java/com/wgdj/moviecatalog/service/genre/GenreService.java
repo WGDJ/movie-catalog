@@ -1,5 +1,7 @@
 package com.wgdj.moviecatalog.service.genre;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -40,6 +42,11 @@ public class GenreService implements GenreServiceInterface {
 	@Override
 	public Mono<Genre> findById(final String id) {
 		return genreRepository.findById(id);
+	}
+	
+	@Override
+	public Flux<Genre> findAllById(final List<String> ids ) {
+		return genreRepository.findAllById(ids);
 	}
 
 	@Override

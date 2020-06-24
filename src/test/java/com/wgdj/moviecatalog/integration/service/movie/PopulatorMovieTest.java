@@ -16,124 +16,125 @@ import com.wgdj.moviecatalog.model.Country;
 import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.model.Movie;
+import com.wgdj.moviecatalog.repository.CollectionRepository;
+import com.wgdj.moviecatalog.repository.CompanyRepository;
+import com.wgdj.moviecatalog.repository.CountryRepository;
+import com.wgdj.moviecatalog.repository.GenreRepository;
+import com.wgdj.moviecatalog.repository.LanguageRepository;
 import com.wgdj.moviecatalog.repository.MovieRepository;
 import com.wgdj.moviecatalog.service.collection.CollectionService;
 import com.wgdj.moviecatalog.service.company.CompanyService;
 import com.wgdj.moviecatalog.service.country.CountryService;
 import com.wgdj.moviecatalog.service.genre.GenreService;
 import com.wgdj.moviecatalog.service.language.LanguageService;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import com.wgdj.moviecatalog.service.movie.MovieService;
 
 @Component
 public class PopulatorMovieTest {
+
+	@Autowired
+	private MovieRepository movieRepository;
+
+	@Autowired
+	private MovieService movieService;
 	
 	@Autowired
-	private  MovieRepository movieRepository;
-	
+	private CollectionRepository collectionRepository;
+
+	@Autowired
+	private GenreRepository genreRepository;
+
+	@Autowired
+	private CompanyRepository companyRepository;
+
+	@Autowired
+	private CountryRepository countryRepository;
+
+	@Autowired
+	private LanguageRepository languageRepository;
+
 	@Autowired
 	private CollectionService collectionService;
 
 	@Autowired
-	private GenreService genreService; 
-	
+	private GenreService genreService;
+
 	@Autowired
-	private CompanyService companyService; 
-	
+	private CompanyService companyService;
+
 	@Autowired
 	private CountryService countryService;
-	
+
 	@Autowired
 	private LanguageService languageService;
 
-//	.belongsToCollection(Collection.builder().name("Hanibal").build())
-//	.genres(Arrays.asList(Genre.builder().name("Horror").build(), Genre.builder().name("Drama").build()))
-//	.productionCompanies(
-//			Arrays.asList(Company.builder().name("Kennedy Miller Productions").originCountry("US").build(),
-//					Company.builder().name("Warner Bros. Pictures").originCountry("US").build()))
-//	.productionCountries(Arrays.asList(Country.builder().name("Australia").iso31661("AU").build(),
-//			Country.builder().name("United States of America").iso31661("US").build()))
-//	.spokenLanguages(Arrays.asList(Language.builder().name("English").iso6391("au").build(),
-//			Language.builder().name("English").iso6391("us").build()))
-	
-	
-	public Mono<Movie> createAnSaveMovieCascade(String title) {
-		Movie movie = Movie.builder()
-				.adult(false)
-				.homepage(String.format("www.%s.com.".replace(" ", ""), title))
-				.title(title)
-				.originalTitle(String.format("%s - Original ", title))
-				.overview(String.format("Overview of %s ", title))
-				.originalLanguage("en")
+	public Movie createAnSaveMovieCascade(String title) {
+
+		Collection collection = createAndSaveCollection("Hanibal");
+		Genre genge1 = createAndSaveGenre("Horror");
+		Genre genge2 = createAndSaveGenre("Drama");
+		Company company1 = createAndSaveCompany("Kennedy Miller Productions");
+		Company company2 = createAndSaveCompany("Warner Bros. Pictures");
+		Country country1 = createAndSaveCountry("Australia");
+		Country country2 = createAndSaveCountry("United States of America");
+		Language language1 = createAndSaveLanguage("English");
+		Language language2 = createAndSaveLanguage("Spanish");
+
+		Movie movie = Movie.builder().adult(false).homepage(String.format("www.%s.com.".replace(" ", ""), title))
+				.title(title).originalTitle(String.format("%s - Original ", title))
+				.overview(String.format("Overview of %s ", title)).originalLanguage("en")
 				.budget(new BigDecimal(57000000.53)).imdbId("57377")
 				.releaseDate(
 						Date.from(LocalDate.of(2001, 02, 20).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-				.status("Released")
-				.build();
-		
-		movieRepository.save(movie).map(m -> {
-			createAndSaveCollection("Hanibal").map(c -> {
-				m.setBelongsToCollection(c.getId());
-				return c;
-			});
-			createAndSaveGenre()
-			return m;
-		});
-		
-		
-		
-		
-		
-		return movieRepository.save(movie);
+				.status("Released").belongsToCollectionId(collection.getId())
+				.genresIds(Arrays.asList(genge1.getId(), genge2.getId()))
+				.productionCompaniesIds(Arrays.asList(company1.getId(), company2.getId()))
+				.productionCountriesIds(Arrays.asList(country1.getId(), country2.getId()))
+				.spokenLanguagesIds(Arrays.asList(language1.getId(), language2.getId())).build();
+
+		return movieService.save(movie).block();
 	}
 
 	public Movie createMovie(String title) {
-		return Movie.builder()
-				.adult(false)
-				.homepage(String.format("www.%s.com.".replace(" ", ""), title))
-				.title(title)
-				.originalTitle(String.format("%s - Original ", title))
-				.overview(String.format("Overview of %s ", title))
-				.originalLanguage("en")
-				.budget(new BigDecimal(57000000.53)).imdbId("57377")
+		return Movie.builder().adult(false).homepage(String.format("www.%s.com.".replace(" ", ""), title)).title(title)
+				.originalTitle(String.format("%s - Original ", title)).overview(String.format("Overview of %s ", title))
+				.originalLanguage("en").budget(new BigDecimal(57000000.53)).imdbId("57377")
 				.releaseDate(
 						Date.from(LocalDate.of(2001, 02, 20).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-				.status("Released")
-				.belongsToCollection(Collection.builder().name("Hanibal").build())
-				.build();
+				.status("Released").build();
 	}
 
-	public Mono<Collection> createAndSaveCollection(String name) {
-		return collectionService.save(Collection.builder().name(name).build());
-	}
-	
-	public Mono<Genre> createAndSaveGenre(String name) {
-		return genreService.save(Genre.builder().name(name).build());
-	}
-	
-	public Flux<Genre> createAndSaveGenre(String ... names) {
-		return Arrays.asList(names).forEach(name -> genreService.save(Genre.builder().name(name).build()));
+	public Collection createAndSaveCollection(String name) {
+		return collectionService.save(Collection.builder().name(name).build()).block();
 	}
 
-	public Mono<Company> createAndSaveCompany(String name) {
-		return companyService.save(Company.builder().name(name).originCountry("US").build());
+	public Genre createAndSaveGenre(String name) {
+		return genreService.save(Genre.builder().name(name).build()).block();
 	}
 
-	public Mono<Country> createAndSaveCountry(String name) {
-		return countryService.save(Country.builder().name(name).iso31661("US").build());
+	public Company createAndSaveCompany(String name) {
+		return companyService.save(Company.builder().name(name).originCountry("US").build()).block();
 	}
 
-	public Mono<Language> createAndSaveLanguage(String name) {
-		return languageService.save(Language.builder().name(name).iso6391("us").build());
+	public Country createAndSaveCountry(String name) {
+		return countryService.save(Country.builder().name(name).iso31661("US").build()).block();
 	}
-	
-	public Flux<Movie> saveAll(List<Movie> movies) {
-		return movieRepository.saveAll(movies);
+
+	public Language createAndSaveLanguage(String name) {
+		return languageService.save(Language.builder().name(name).iso6391("us").build()).block();
 	}
-	
-	public void clearMongoCollection() {
-		movieRepository.deleteAll();
+
+	public void saveAll(List<Movie> movies) {
+		movieRepository.saveAll(movies);
+	}
+
+	public void clearMongoCollections() {
+		collectionRepository.deleteAll();
+		genreRepository.deleteAll().block();
+		companyRepository.deleteAll().block();
+		countryRepository.deleteAll().block();
+		languageRepository.deleteAll().block();
+		movieRepository.deleteAll().block();
 	}
 
 }

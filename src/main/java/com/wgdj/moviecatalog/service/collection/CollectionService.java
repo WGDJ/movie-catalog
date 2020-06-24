@@ -1,5 +1,7 @@
 package com.wgdj.moviecatalog.service.collection;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -41,6 +43,12 @@ public class CollectionService implements CollectionServiceInterface {
 	public Mono<Collection> findById(final String id) {
 		return collectionRepository.findById(id);
 	}
+	
+	@Override
+	public Flux<Collection> findAllById(List<String> ids) {
+		return collectionRepository.findAllById(ids);
+	}
+
 
 	@Override
 	public Flux<Collection> findAll(final Collection collection) {
