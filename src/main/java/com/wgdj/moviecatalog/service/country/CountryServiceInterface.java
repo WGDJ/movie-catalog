@@ -2,7 +2,6 @@ package com.wgdj.moviecatalog.service.country;
 
 import java.util.List;
 
-import com.wgdj.moviecatalog.model.Company;
 import com.wgdj.moviecatalog.model.Country;
 
 import reactor.core.publisher.Flux;

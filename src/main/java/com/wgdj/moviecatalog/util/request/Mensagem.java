@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 class Mensagem {
-	public String message;
+	final String message;
 }

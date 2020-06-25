@@ -30,7 +30,7 @@ import com.wgdj.moviecatalog.service.language.LanguageService;
 import com.wgdj.moviecatalog.service.movie.MovieService;
 
 @Component
-public class PopulatorServiceMovieTest {
+public class PopulatorServiceMovie {
 
 	@Autowired
 	private MovieRepository movieRepository;

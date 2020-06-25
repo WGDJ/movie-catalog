@@ -26,8 +26,8 @@ public class GenreService implements GenreServiceInterface {
 	private BeansUtil beanUtils;
 
 	@Override
-	public Mono<Genre> save(final Genre Genre) {
-		return genreRepository.save(Genre);
+	public Mono<Genre> save(final Genre genre) {
+		return genreRepository.save(genre);
 	}
 
 	@Override
@@ -41,19 +41,21 @@ public class GenreService implements GenreServiceInterface {
 
 	@Override
 	public Mono<Genre> findById(final String id) {
+		if (id == null) return Mono.empty(); 
 		return genreRepository.findById(id);
 	}
 	
 	@Override
 	public Flux<Genre> findAllById(final List<String> ids ) {
+		if (ids == null) return Flux.empty();
 		return genreRepository.findAllById(ids);
 	}
 
 	@Override
-	public Flux<Genre> findAll(final Genre Genre) {
+	public Flux<Genre> findAll(final Genre genre) {
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 				.withStringMatcher(StringMatcher.STARTING);
-		Example<Genre> example = Example.of(Genre, matcher);
+		Example<Genre> example = Example.of(genre, matcher);
 		return genreRepository.findAll(example);
 	}
 

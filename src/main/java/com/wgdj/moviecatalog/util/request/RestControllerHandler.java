@@ -13,12 +13,12 @@ public class RestControllerHandler {
 
 	@ExceptionHandler({ DatabaseObjectNotFoundException.class })
 	public ResponseEntity<Mensagem> handleNotFound(final RuntimeException ex) {
-		return new ResponseEntity<Mensagem>(Mensagem.builder().message(ex.getMessage()).build(), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(Mensagem.builder().message(ex.getMessage()).build(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler({ EmptyResponseException.class })
 	public ResponseEntity<Mensagem> handleEmptyResponse(final RuntimeException ex) {
-		return new ResponseEntity<Mensagem>(Mensagem.builder().message(ex.getMessage()).build(), HttpStatus.OK);
+		return new ResponseEntity<>(Mensagem.builder().message(ex.getMessage()).build(), HttpStatus.OK);
 	}
 
 }

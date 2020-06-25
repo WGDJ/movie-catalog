@@ -41,11 +41,13 @@ public class LanguageService implements LanguageServiceInterface {
 
 	@Override
 	public Mono<Language> findById(final String id) {
+		if (id == null) return Mono.empty();
 		return languageRepository.findById(id);
 	}
 	
 	@Override
 	public Flux<Language> findAllById(List<String> ids) {
+		if (ids == null) return Flux.empty();
 		return languageRepository.findAllById(ids);
 	}
 

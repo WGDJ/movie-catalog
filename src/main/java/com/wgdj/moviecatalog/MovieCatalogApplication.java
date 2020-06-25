@@ -1,6 +1,7 @@
 package com.wgdj.moviecatalog;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +31,11 @@ public class MovieCatalogApplication {
 	public BeanUtilsBean beansUtils(LocalValidatorFactoryBean lfb) {
 		return new NullAwareBeanUtils();
 	}
+	
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+
 
 }

@@ -5,21 +5,25 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "companies")
 public class Company {
 
 	@Id
-	public String id;
+	private String id;
 
 	@NotBlank(message = "Company name is required.")
-	public String name;
+	private String name;
 
 	@NotBlank(message = "Company oring country is required.")
-	public String originCountry;
+	private String originCountry;
 
 }

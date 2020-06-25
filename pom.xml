@@ -7,7 +7,8 @@
 	<groupId>com.wgdj</groupId>
 	<artifactId>movie-catalog</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>movie-catalog</name>
+	<!-- <name>movie-catalog</name> -->
+	<name>integracao-psp</name>
 	<description>Simple and Reactive Movie Catalog</description>
 
 	<properties>
@@ -17,8 +18,12 @@
 		<embedmongo-spring.version>RELEASE</embedmongo-spring.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<springdoc.version>1.4.1</springdoc.version>
-		
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<modelmapper.version>2.3.8</modelmapper.version>
+		<sonar-maven-plugin.version>3.4.0.905</sonar-maven-plugin.version>
+
+		<!-- <sonar.host.url>http://localhost:9000</sonar.host.url> -->
+		<sonar.host.url>https://sonarqube.anvisa.gov.br</sonar.host.url>
+		<sonar.login>2fca3c46c0fc871034ff7b4c0b3073ce9a3bac3b</sonar.login>
 	</properties>
 
 	<parent>
@@ -87,6 +92,12 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -101,7 +112,7 @@
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.4.0.905</version>
+					<version>${sonar-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

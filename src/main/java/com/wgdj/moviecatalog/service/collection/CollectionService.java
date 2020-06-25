@@ -41,11 +41,13 @@ public class CollectionService implements CollectionServiceInterface {
 
 	@Override
 	public Mono<Collection> findById(final String id) {
+		if (id == null) return Mono.empty(); 
 		return collectionRepository.findById(id);
 	}
 	
 	@Override
 	public Flux<Collection> findAllById(List<String> ids) {
+		if (ids == null) return Flux.empty();
 		return collectionRepository.findAllById(ids);
 	}
 

@@ -16,7 +16,7 @@ import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.model.Movie;
 
 @Component
-public class PopulatorControllerMovieTest {
+public class PopulatorControllerMovie {
 
 
 	public static Movie createMovieWithAllChilds(String title) {

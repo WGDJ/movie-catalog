@@ -35,7 +35,7 @@ public class MovieServiceTest {
 	private MovieServiceInterface movieService;
 
 	@Autowired
-	private PopulatorServiceMovieTest populatorMovieTest;
+	private PopulatorServiceMovie populatorMovieTest;
 	
 	@Before
 	public void init() {

@@ -64,6 +64,7 @@ public class MovieService implements MovieServiceInterface {
 
 	@Override
 	public Mono<Movie> findById(final String id) {
+		if (id == null) return Mono.empty();
 		return movieRepository.findById(id).flatMap(composeMono());
 	}
 
@@ -73,18 +74,18 @@ public class MovieService implements MovieServiceInterface {
 
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 				.withStringMatcher(StringMatcher.STARTING)
-				.withMatcher("genresIds", match -> match.transform(source -> {
-					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-				}).contains())
-				.withMatcher("productionCompaniesIds", match -> match.transform(source -> {
-					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-				}).contains())
-				.withMatcher("productionCountriesIds", match -> match.transform(source -> {
-					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-				}).contains())
-				.withMatcher("spokenLanguagesIds", match -> match.transform(source -> {
-					return (Optional<Object>) Optional.of(((List) source.get()).iterator().next());
-				}).contains());
+				.withMatcher("genresIds", match -> match.transform(source -> 
+					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+				).contains())
+				.withMatcher("productionCompaniesIds", match -> match.transform(source -> 
+					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+				).contains())
+				.withMatcher("productionCountriesIds", match -> match.transform(source -> 
+					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+				).contains())
+				.withMatcher("spokenLanguagesIds", match -> match.transform(source -> 
+					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+				).contains());
 
 		return movieRepository.findAll(Example.of(movie, matcher)).flatMap(composeMono());
 

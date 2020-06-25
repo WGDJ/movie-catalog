@@ -41,11 +41,13 @@ public class CountryService implements CountryServiceInterface {
 
 	@Override
 	public Mono<Country> findById(final String id) {
+		if (id == null) return Mono.empty(); 
 		return countryRepository.findById(id);
 	}
 	
 	@Override
 	public Flux<Country> findAllById(List<String> ids) {
+		if (ids == null) return Flux.empty();
 		return countryRepository.findAllById(ids);
 	}
 

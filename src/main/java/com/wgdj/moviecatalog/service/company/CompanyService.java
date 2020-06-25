@@ -41,11 +41,13 @@ public class CompanyService implements CompanyServiceInterface {
 
 	@Override
 	public Mono<Company> findById(final String id) {
+		if (id == null) return Mono.empty(); 
 		return companyRepository.findById(id);
 	}
 	
 	@Override
 	public Flux<Company> findAllById(List<String> ids) {
+		if (ids == null) return Flux.empty();
 		return companyRepository.findAllById(ids);
 	}
 

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,13 +16,14 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.wgdj.moviecatalog.controller.MovieController;
 import com.wgdj.moviecatalog.model.Movie;
+import com.wgdj.moviecatalog.model.dtos.MovieDTO;
 import com.wgdj.moviecatalog.service.movie.MovieService;
 
 import reactor.core.publisher.Flux;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(MovieController.class)
-@Import(MovieService.class)
+@Import({MovieService.class, ModelMapper.class})
 public class MovieControllerTest {
 
 	@Autowired
@@ -34,8 +36,8 @@ public class MovieControllerTest {
 	public void givenCollections_whenGetAllCollections_thenReturnJsonArray()
 	  throws Exception {
 	     
-		Movie movie1 = PopulatorControllerMovieTest.createMovieWithAllChilds("Hannibal");
-		Movie movie2 = PopulatorControllerMovieTest.createMovieWithAllChilds("Mad Max Collection");
+		Movie movie1 = PopulatorControllerMovie.createMovieWithAllChilds("Hannibal");
+		Movie movie2 = PopulatorControllerMovie.createMovieWithAllChilds("Mad Max Collection");
 		
 		Flux<Movie> movies =  Flux.just(movie1, movie2);
 		
@@ -46,7 +48,7 @@ public class MovieControllerTest {
 	        .accept(MediaType.APPLICATION_STREAM_JSON)
 	        .exchange()
 	        .expectStatus().isOk()
-	        .expectBodyList(Movie.class)
+	        .expectBodyList(MovieDTO.class)
 	        .value(movs -> movs.size(), equalTo(2));
 
 	}
