@@ -17,6 +17,8 @@
 		<embedmongo-spring.version>RELEASE</embedmongo-spring.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<springdoc.version>1.4.1</springdoc.version>
+		
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
 	</properties>
 
 	<parent>
@@ -80,9 +82,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springdoc</groupId>
-		    <artifactId>springdoc-openapi-webflux-ui</artifactId>
-		    <version>${springdoc.version}</version>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -94,6 +96,15 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>3.4.0.905</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
