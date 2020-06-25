@@ -5,9 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.wgdj.moviecatalog.model.Collection;
@@ -16,59 +14,12 @@ import com.wgdj.moviecatalog.model.Country;
 import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.model.Movie;
-import com.wgdj.moviecatalog.repository.CollectionRepository;
-import com.wgdj.moviecatalog.repository.CompanyRepository;
-import com.wgdj.moviecatalog.repository.CountryRepository;
-import com.wgdj.moviecatalog.repository.GenreRepository;
-import com.wgdj.moviecatalog.repository.LanguageRepository;
-import com.wgdj.moviecatalog.repository.MovieRepository;
-import com.wgdj.moviecatalog.service.collection.CollectionService;
-import com.wgdj.moviecatalog.service.company.CompanyService;
-import com.wgdj.moviecatalog.service.country.CountryService;
-import com.wgdj.moviecatalog.service.genre.GenreService;
-import com.wgdj.moviecatalog.service.language.LanguageService;
-import com.wgdj.moviecatalog.service.movie.MovieService;
 
 @Component
 public class PopulatorControllerMovieTest {
 
-	@Autowired
-	private MovieRepository movieRepository;
 
-	@Autowired
-	private MovieService movieService;
-	
-	@Autowired
-	private CollectionRepository collectionRepository;
-
-	@Autowired
-	private GenreRepository genreRepository;
-
-	@Autowired
-	private CompanyRepository companyRepository;
-
-	@Autowired
-	private CountryRepository countryRepository;
-
-	@Autowired
-	private LanguageRepository languageRepository;
-
-	@Autowired
-	private CollectionService collectionService;
-
-	@Autowired
-	private GenreService genreService;
-
-	@Autowired
-	private CompanyService companyService;
-
-	@Autowired
-	private CountryService countryService;
-
-	@Autowired
-	private LanguageService languageService;
-
-	public Movie createAnSaveMovieWithAllChilds(String title) {
+	public static Movie createMovieWithAllChilds(String title) {
 
 		Collection collection = createAndSaveCollection("Hannibal");
 		Genre genge1 = createAndSaveGenre("Horror");
@@ -92,40 +43,27 @@ public class PopulatorControllerMovieTest {
 				.productionCountriesIds(Arrays.asList(country1.getId(), country2.getId()))
 				.spokenLanguagesIds(Arrays.asList(language1.getId(), language2.getId())).build();
 
-		return movieService.save(movie).block();
+		return movie;
 	}
 
-	private Collection createAndSaveCollection(String name) {
-		return collectionService.save(Collection.builder().name(name).build()).block();
+	private static Collection createAndSaveCollection(String name) {
+		return Collection.builder().name(name).build();
 	}
 
-	private Genre createAndSaveGenre(String name) {
-		return genreService.save(Genre.builder().name(name).build()).block();
+	private static Genre createAndSaveGenre(String name) {
+		return Genre.builder().name(name).build();
 	}
 
-	private Company createAndSaveCompany(String name) {
-		return companyService.save(Company.builder().name(name).originCountry("US").build()).block();
+	private static Company createAndSaveCompany(String name) {
+		return Company.builder().name(name).originCountry("US").build();
 	}
 
-	private Country createAndSaveCountry(String name) {
-		return countryService.save(Country.builder().name(name).iso31661("US").build()).block();
+	private static Country createAndSaveCountry(String name) {
+		return Country.builder().name(name).iso31661("US").build();
 	}
 
-	private Language createAndSaveLanguage(String name) {
-		return languageService.save(Language.builder().name(name).iso6391("us").build()).block();
-	}
-
-	private void saveAll(List<Movie> movies) {
-		movieRepository.saveAll(movies);
-	}
-
-	public void clearMongoCollections() {
-		collectionRepository.deleteAll();
-		genreRepository.deleteAll().block();
-		companyRepository.deleteAll().block();
-		countryRepository.deleteAll().block();
-		languageRepository.deleteAll().block();
-		movieRepository.deleteAll().block();
+	private static Language createAndSaveLanguage(String name) {
+		return Language.builder().name(name).iso6391("us").build();
 	}
 
 }

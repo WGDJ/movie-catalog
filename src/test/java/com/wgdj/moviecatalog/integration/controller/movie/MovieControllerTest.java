@@ -1,53 +1,54 @@
 package com.wgdj.moviecatalog.integration.controller.movie;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.wgdj.moviecatalog.controller.CollectionController;
+import com.wgdj.moviecatalog.controller.MovieController;
+import com.wgdj.moviecatalog.model.Movie;
+import com.wgdj.moviecatalog.service.movie.MovieService;
+
+import reactor.core.publisher.Flux;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(CollectionController.class)
+@WebFluxTest(MovieController.class)
+@Import(MovieService.class)
 public class MovieControllerTest {
-	
-    @Autowired
-    private MockMvc mvc;
-    
-    @Autowired
-    private PopulatorControllerMovieTest populatorControllerMovieTest;
-    
-	@Before
-	public void init() {
-		populatorControllerMovieTest.clearMongoCollections();
-	}
+
+	@Autowired
+	WebTestClient webTestClient;
+
+	@MockBean
+	private MovieService movieService;
 
 	@Test
 	public void givenCollections_whenGetAllCollections_thenReturnJsonArray()
 	  throws Exception {
 	     
-		String title1 = "Hannibal";
-		populatorControllerMovieTest.createAnSaveMovieWithAllChilds(title1);
-		String title2 = "Mad Max Collection";
-		populatorControllerMovieTest.createAnSaveMovieWithAllChilds(title2);
+		Movie movie1 = PopulatorControllerMovieTest.createMovieWithAllChilds("Hannibal");
+		Movie movie2 = PopulatorControllerMovieTest.createMovieWithAllChilds("Mad Max Collection");
+		
+		Flux<Movie> movies =  Flux.just(movie1, movie2);
+		
+		when(movieService.findAll()).thenReturn(movies);
+		
+		webTestClient.get()
+	        .uri("/movies")
+	        .accept(MediaType.APPLICATION_STREAM_JSON)
+	        .exchange()
+	        .expectStatus().isOk()
+	        .expectBodyList(Movie.class)
+	        .value(movs -> movs.size(), equalTo(2));
 
-		mvc.perform(get("/collections")
-			      .contentType(MediaType.APPLICATION_JSON))
-			      .andExpect(status().isOk())
-			      .andExpect(jsonPath("$", hasSize(2)))
-			      .andExpect(jsonPath("$[0].title", is(title1)))
-	    		  .andExpect(jsonPath("$[2].title", is(title2)));
 	}
-	
 
 }
