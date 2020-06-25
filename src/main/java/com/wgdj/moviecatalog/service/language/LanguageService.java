@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Language;
 import com.wgdj.moviecatalog.repository.LanguageRepository;
-import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
+import com.wgdj.moviecatalog.util.beansUtil.BeanUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public class LanguageService implements LanguageServiceInterface {
 	private LanguageRepository languageRepository;
 
 	@Autowired
-	private BeansUtil beanUtils;
+	private BeanUtil beanUtils;
 
 	@Override
 	public Mono<Language> save(final Language language) {

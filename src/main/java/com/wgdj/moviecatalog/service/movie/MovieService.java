@@ -18,7 +18,7 @@ import com.wgdj.moviecatalog.service.company.CompanyService;
 import com.wgdj.moviecatalog.service.country.CountryService;
 import com.wgdj.moviecatalog.service.genre.GenreService;
 import com.wgdj.moviecatalog.service.language.LanguageService;
-import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
+import com.wgdj.moviecatalog.util.beansUtil.BeanUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,7 +45,7 @@ public class MovieService implements MovieServiceInterface {
 	private LanguageService languageService;
 
 	@Autowired
-	private BeansUtil beanUtils;
+	private BeanUtil beanUtils;
 
 	@Override
 	public Mono<Movie> save(Movie movie) {

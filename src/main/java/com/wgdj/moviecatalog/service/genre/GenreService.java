@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Genre;
 import com.wgdj.moviecatalog.repository.GenreRepository;
-import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
+import com.wgdj.moviecatalog.util.beansUtil.BeanUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public class GenreService implements GenreServiceInterface {
 	private GenreRepository genreRepository;
 
 	@Autowired
-	private BeansUtil beanUtils;
+	private BeanUtil beanUtils;
 
 	@Override
 	public Mono<Genre> save(final Genre genre) {

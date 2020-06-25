@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wgdj.moviecatalog.model.Movie;
-import com.wgdj.moviecatalog.model.dtos.MovieByExampleDTO;
-import com.wgdj.moviecatalog.model.dtos.MovieDTO;
+import com.wgdj.moviecatalog.model.dtos.MovieInDTO;
+import com.wgdj.moviecatalog.model.dtos.MovieOutDTO;
 import com.wgdj.moviecatalog.service.movie.MovieService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class MovieController {
 
 	@PostMapping("/movies")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Mono<MovieDTO> save(@RequestBody final MovieDTO movieDTO) {
+	public Mono<MovieOutDTO> save(@RequestBody final MovieInDTO movieDTO) {
 		return movieService.save(convertToEntity(movieDTO))
 				.map(this::convertToDto)
 				.doOnNext(o -> log.debug("Save movie - {}", o));
@@ -41,7 +41,7 @@ public class MovieController {
 	
 	@PutMapping("/movies")
 	@ResponseStatus(HttpStatus.OK)
-	public Mono<MovieDTO> update(@RequestBody final MovieDTO movieDTO) {
+	public Mono<MovieOutDTO> update(@RequestBody final MovieInDTO movieDTO) {
 		return movieService.update(convertToEntity(movieDTO))
 				.map(this::convertToDto)
 				.doOnNext(c -> log.debug("Save movie - {}", c));
@@ -49,7 +49,7 @@ public class MovieController {
 
 	@GetMapping("/movies/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Mono<MovieDTO> findById(@PathVariable final String id) {
+	public Mono<MovieOutDTO> findById(@PathVariable final String id) {
 		return movieService.findById(id)
 				.map(this::convertToDto)
 				.doOnNext(c -> log.debug("Find movie by id - {}", c));
@@ -57,7 +57,7 @@ public class MovieController {
 	
 	@GetMapping(path = "/moviesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public Flux<MovieDTO> findAllByExample(@RequestBody final MovieByExampleDTO movieDTO) {
+	public Flux<MovieOutDTO> findAllByExample(@RequestBody final MovieInDTO movieDTO) {
 		return movieService.findAll(convertToEntity(movieDTO))
 				.map(this::convertToDto)
 				.doOnNext(c -> log.debug("Find movies by example - {}", c));
@@ -65,21 +65,17 @@ public class MovieController {
 	
 	@GetMapping(path = "/movies", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public Flux<MovieDTO> findAll() {
+	public Flux<MovieOutDTO> findAll() {
 		return movieService.findAll()
 				.map(this::convertToDto)
 				.doOnComplete(() -> log.debug("Find all movies - {}"));
 	}
 	
-	public MovieDTO convertToDto(Movie movie) {
-		return modelMapper.map(movie, MovieDTO.class);
+	public MovieOutDTO convertToDto(Movie movie) {
+		return modelMapper.map(movie, MovieOutDTO.class);
 	}
 
-	public Movie convertToEntity(MovieDTO movieDTO) {
-		return modelMapper.map(movieDTO, Movie.class);
-	}
-	
-	public Movie convertToEntity(MovieByExampleDTO movieDTO) {
+	public Movie convertToEntity(MovieInDTO movieDTO) {
 		return modelMapper.map(movieDTO, Movie.class);
 	}
 

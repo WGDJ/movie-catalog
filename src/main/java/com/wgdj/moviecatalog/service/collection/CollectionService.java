@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.wgdj.moviecatalog.exception.DatabaseObjectNotFoundException;
 import com.wgdj.moviecatalog.model.Collection;
 import com.wgdj.moviecatalog.repository.CollectionRepository;
-import com.wgdj.moviecatalog.util.beansUtil.BeansUtil;
+import com.wgdj.moviecatalog.util.beansUtil.BeanUtil;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public class CollectionService implements CollectionServiceInterface {
 	private CollectionRepository collectionRepository;
 
 	@Autowired
-	private BeansUtil beanUtils;
+	private BeanUtil beanUtils;
 
 	@Override
 	public Mono<Collection> save(final Collection collection) {

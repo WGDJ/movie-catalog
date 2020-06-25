@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class MovieDTO {
+public class MovieOutDTO {
 
 	private String id;
 

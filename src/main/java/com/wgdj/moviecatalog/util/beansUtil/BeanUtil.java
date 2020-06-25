@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class BeansUtil {
+public class BeanUtil {
 	@Autowired
 	private BeanUtilsBean beanUtilsBean;
 
