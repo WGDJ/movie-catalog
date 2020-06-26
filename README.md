@@ -28,7 +28,7 @@ $ mvn clean install sonar:sonar
   
  ```sh
 $ mvn test 
-$ sonar:sonar
+$ mvn sonar:sonar
 ```
 
 # TODO
