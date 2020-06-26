@@ -55,7 +55,7 @@ public class MovieController {
 				.doOnNext(c -> log.debug("Find movie by id - {}", c));
 	}
 	
-	@GetMapping(path = "/moviesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/moviesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<MovieOutDTO> findAllByExample(@RequestBody final MovieInDTO movieDTO) {
 		return movieService.findAll(convertToEntity(movieDTO))

@@ -54,7 +54,7 @@ public class CollectionController {
 				.doOnNext(c -> log.debug("Find collection by id - {}", c));
 	}
 	
-	@GetMapping(path = "/collectionsByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/collectionsByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<CollectionDTO> findAllByExample(@RequestBody final CollectionDTO collectionDTO) {
 		return collectionService.findAll(convertToEntity(collectionDTO))

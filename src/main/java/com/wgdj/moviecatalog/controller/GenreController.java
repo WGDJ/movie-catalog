@@ -54,7 +54,7 @@ public class GenreController {
 				.doOnNext(c -> log.debug("Find genre by id - {}", c));
 	}
 	
-	@GetMapping(path = "/genresByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/genresByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<GenreDTO> findAllByExample(@RequestBody final GenreDTO genreDTO) {
 		return genreService.findAll(convertToEntity(genreDTO))

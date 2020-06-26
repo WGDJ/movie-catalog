@@ -54,7 +54,7 @@ public class CompanyController {
 				.doOnNext(c -> log.debug("Find company by id - {}", c));
 	}
 	
-	@GetMapping(path = "/companiesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/companiesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<CompanyDTO> findAllByExample(@RequestBody final CompanyDTO companyDTO) {
 		return companyService.findAll(convertToEntity(companyDTO))

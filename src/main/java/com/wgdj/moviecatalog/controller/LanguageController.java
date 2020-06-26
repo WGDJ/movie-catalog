@@ -54,7 +54,7 @@ public class LanguageController {
 				.doOnNext(c -> log.debug("Find language by id - {}", c));
 	}
 	
-	@GetMapping(path = "/languagesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/languagesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<LanguageDTO> findAllByExample(@RequestBody final LanguageDTO languageDTO) {
 		return languageService.findAll(convertToEntity(languageDTO))

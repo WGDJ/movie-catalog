@@ -75,16 +75,16 @@ public class MovieService implements MovieServiceInterface {
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues()
 				.withStringMatcher(StringMatcher.STARTING)
 				.withMatcher("genresIds", match -> match.transform(source -> 
-					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+					Optional.of(((List) source.get()).iterator().next())
 				).contains())
 				.withMatcher("productionCompaniesIds", match -> match.transform(source -> 
-					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+					Optional.of(((List) source.get()).iterator().next())
 				).contains())
 				.withMatcher("productionCountriesIds", match -> match.transform(source -> 
-					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+					Optional.of(((List) source.get()).iterator().next())
 				).contains())
 				.withMatcher("spokenLanguagesIds", match -> match.transform(source -> 
-					(Optional<Object>) Optional.of(((List) source.get()).iterator().next())
+					Optional.of(((List) source.get()).iterator().next())
 				).contains());
 
 		return movieRepository.findAll(Example.of(movie, matcher)).flatMap(composeMono());

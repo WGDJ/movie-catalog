@@ -54,7 +54,7 @@ public class CountryController {
 				.doOnNext(c -> log.debug("Find country by id - {}", c));
 	}
 	
-	@GetMapping(path = "/countriesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	@PostMapping(path = "/countriesByExample", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public Flux<CountryDTO> findAllByExample(@RequestBody final CountryDTO countryDTO) {
 		return countryService.findAll(convertToEntity(countryDTO))
