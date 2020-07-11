@@ -7,28 +7,22 @@
  - O mongo será povoado durante a inicialização com alguns dados.
  - O swagger estará disponível em <http://localhost:8080/swagger-ui.html>
  
- ```sh
+```sh
 $ mvn spring-boot:run
 ```
 
 # Testar
  - Executando a suite de testes: TestSuite.java.
  
- ```sh
+```sh
 $ mvn test
 ```
 
 # Sonar
  - O endereço do sonarqube pode ser modificado atraves do arquivo pom.xml.
  
- ```sh
+```sh
 $ mvn clean install sonar:sonar
-```
-# Enviando a cobertura de código para o Sonar
-  
- ```sh
-$ mvn test 
-$ mvn sonar:sonar
 ```
 
 # TODO
