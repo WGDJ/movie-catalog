@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<embedmongo-spring.version>RELEASE</embedmongo-spring.version>
-		<commons-beanutils.version>1.9.4</commons-beanutils.version>
+		<commons-beanutils.version>1.11.0</commons-beanutils.version>
 		<springdoc.version>1.4.1</springdoc.version>
 		<modelmapper.version>2.3.8</modelmapper.version>
 		<sonar-maven-plugin.version>3.4.0.905</sonar-maven-plugin.version>
